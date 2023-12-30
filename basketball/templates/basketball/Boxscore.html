@@ -1,0 +1,115 @@
+{% extends 'basketball/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Schedule.css' %}">
+<link rel="stylesheet" href="{% static 'CSS/Stats2.css' %}">
+{% endblock%}
+{% block content %}
+{% include 'base/messages.html' %}
+<div class="game-info">
+   <p> <span class="game-label">Location</span> <span class="game-value">{{game.game_location}}</span>
+   </p>
+   <p><span class="game-label">Date</span> <span class="game-value">{{game.game_date}}</span></p>
+   <p><span class="game-label">Time</span> <span class="game-value">{{game.game_time}}</span></p>
+   <p><span class="game-label">Status</span> <span class="game-value">{{game.game_status}}</span></p>
+</div>
+<div class="table-container">
+   <table>
+      <tr class="top">
+         <th class="name">
+            <p class="text-center">{{ game.team_1.team_name }}</p>
+         </th>
+         <th class="stat">VS</th>
+         <th class="name">
+            <p class="text-center">{{ game.team_2.team_name }}</p>
+         </th>
+      </tr>
+      <tr class="player-tr">
+         <td class="games winbg " id="t1-score">
+            {{ game.team_1_score | default_if_none:''   }}
+         </td>
+         <td class="games" id="game-status-change">
+            {{game.game_status}}
+         </td>
+         <td class="games winbg" id="t2-score">
+            {{ game.team_2_score | default_if_none:''   }}
+         </td>
+
+      </tr>
+   </table>
+
+</div>
+<div class="table-container">
+   <table>
+      <tr class="top">
+         <th class="tag">#</th>
+         <th></th>
+         <th class="name cursor-pointer"
+            onclick="window.location.href='{% url 'team-stats' team_id=game.team_1.team_id %}'">
+            {{ game.team_1.team_name }}
+         </th>
+         <th class="stat">FG</th>
+         <th class="stat">3PT</th>
+         <th class="stat">FT</th>
+         <th class="stat">RBD</th>
+         <th class="stat">AST</th>
+         <th class="stat">STL</th>
+         <th class="stat">BLK</th>
+         <th class="stat">TOVS</th>
+         <th class="stat">PTS</th>
+      </tr>
+      {% for player,performance in players1_performance_dict.items %}
+      <tr>
+         <td class="rank">{{ player.player_shirt_number }}</td>
+         <td class="mw"><img class="mascot" src="{{ player.player_image.url }}" alt=""></td>
+         <td>{{ player.player_first_name }} {{ player.player_last_name }}</td>
+         <td class="games winbg">{{ performance.field_goals | default_if_none:'' }}</td>
+         <td class="games">{{ performance.three_pointers | default_if_none:'' }}</td>
+         <td class="games winbg">{{ performance.free_throws | default_if_none:'' }}</td>
+         <td class="games">{{ performance.rebounds | default_if_none:'' }}</td>
+         <td class="games winbg">{{ performance.assists | default_if_none:'' }}</td>
+         <td class="games">{{ performance.steals | default_if_none:'' }}</td>
+         <td class="games winbg">{{ performance.blocks | default_if_none:'' }}</td>
+         <td class="games">{{ performance.turnovers | default_if_none:'' }}</td>
+         <td class="games ">{{ performance.points | default_if_none:'' }}</td>
+      </tr>
+      {% endfor %}
+   </table>
+   <table>
+      <tr class="top">
+         <th class="tag">#</th>
+         <th></th>
+         <th class="name cursor-pointer"
+            onclick="window.location.href='{% url 'team-stats' team_id=game.team_2.team_id %}'">
+            {{ game.team_2.team_name }}
+         </th>
+         <th class="stat">FG</th>
+         <th class="stat">3PT</th>
+         <th class="stat">FT</th>
+         <th class="stat">RBD</th>
+         <th class="stat">AST</th>
+         <th class="stat">STL</th>
+         <th class="stat">BLK</th>
+         <th class="stat">TOVS</th>
+         <th class="stat">PTS</th>
+      </tr>
+      {% for player,performance in players2_performance_dict.items %}
+      <tr>
+         <td class="rank">{{ player.player_shirt_number }}</td>
+         <td class="mw"><img class="mascot" src="{{ player.player_image.url }}" alt=""></td>
+         <td>{{ player.player_first_name }} {{ player.player_last_name }}</td>
+         <td class="games winbg">{{ performance.field_goals | default_if_none:'' }}</td>
+         <td class="games">{{ performance.three_pointers | default_if_none:'' }}</td>
+         <td class="games winbg">{{ performance.free_throws | default_if_none:'' }}</td>
+         <td class="games">{{ performance.rebounds | default_if_none:'' }}</td>
+         <td class="games winbg">{{ performance.assists | default_if_none:'' }}</td>
+         <td class="games">{{ performance.steals | default_if_none:'' }}</td>
+         <td class="games winbg">{{ performance.blocks | default_if_none:'' }}</td>
+         <td class="games">{{ performance.turnovers | default_if_none:'' }}</td>
+         <td class="games ">{{ performance.points | default_if_none:'' }}</td>
+      </tr>
+      {% endfor %}
+   </table>
+</div>
+{%endblock%}

@@ -1,0 +1,30 @@
+{% extends 'volleyball/base.html'%}
+{% load static %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Teams.css' %}">
+{% endblock%}
+{% block content %}
+{% include 'base/messages.html' %}
+<div class="table-container">
+   <table>
+      <tr class="top">
+         <th class="tag">#</th>
+         <th></th>
+         <th class="name"></th>
+         <th class="winloss">W</th>
+         <th class="winloss">L</th>
+      </tr>
+      {% for Team in teams %}
+      <tr class="cursor-pointer"
+         onclick="window.location.href='{% url 'volleyball-team-stats' team_id=Team.team_id %}'">
+         <td class=" rank">{{forloop.counter}}</td>
+         <td><img class="mw" src="{{ Team.team_logo.url }}" alt="{{ Team.team_abbreviation }} Logo"></td>
+         <td class="teams">{{Team.team_name }}</td>
+         <td class="games winbg">{{Team.wins | default_if_none:'-'}}</td>
+         <td class="games">{{Team.loses | default_if_none:'-'}}</td>
+
+      </tr>
+      {% endfor %}
+   </table>
+</div>
+{%endblock%}

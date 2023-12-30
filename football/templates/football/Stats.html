@@ -1,0 +1,63 @@
+{% extends 'football/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Stats.css' %}">
+{% endblock%}
+{% block content %}
+{% include 'base/messages.html' %}
+<div class="fill">
+
+    <div class="statsbox" onclick="document.location='{% url 'football-allstats' %}'">
+        <p class="title">Goal Leaders</p>
+        {% for leader in goal_leaders %}
+        <div class="playerbox">
+            <img class="playerimage" src="{{ leader.player_image.url }}"
+                alt="{{ leader..player_first_name }} {{ leader.player_last_name }}">
+            <div class="playerinfo">
+                <p class="playername">{{ leader.player_last_name }} {{ leader.player_last_name }}</p>
+                <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
+            </div>
+            <div class="statbox">
+                <p class="stat">{{ leader.goals }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="statsbox" onclick="document.location='allstats'">
+        <p class="title">Assist Leaders</p>
+        {% for leader in assist_leaders %}
+        <div class="playerbox">
+            <img class="playerimage" src="{{ leader.player_image.url }}"
+                alt="{{ leader.player_last_name }} {{ leader.player_last_name }}">
+            <div class="playerinfo">
+                <p class="playername">{{ leader.player_last_name }} {{ leader.player_last_name }}</p>
+                <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
+            </div>
+            <div class="statbox">
+                <p class="stat">{{ leader.assists }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="statsbox" onclick="document.location='allstats'">
+        <p class="title">Saves Leaders</p>
+        {% for leader in saves_leaders %}
+        <div class="playerbox">
+            <img class="playerimage" src="{{ leader.player_image.url }}"
+                alt="{{ leader.player_last_name }} {{ leader.player_last_name }}">
+            <div class="playerinfo">
+                <p class="playername">{{ leader.player_last_name }} {{ leader.player_last_name }}</p>
+                <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
+            </div>
+            <div class="statbox">
+                <p class="stat">{{ leader.saves }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{%endblock%}

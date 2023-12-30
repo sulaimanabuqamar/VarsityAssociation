@@ -1,0 +1,111 @@
+table {
+    margin: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    border-spacing: 0px;
+}
+
+td {
+    border-bottom: 1pt solid #233754;
+}
+
+.mascot {
+    height: 25px;
+    width: 25px;
+}
+
+.name {
+    height: 41px;
+    width: 61px;
+    flex-direction: column;
+    justify-content: left;
+    flex-shrink: 0; 
+    color: #EAF5FF;
+    text-align: left;
+    font-size: 20px;
+    font-family: "Inter", sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.mw {
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    margin: 5px 5px 0px 0px;
+    text-align: center;
+} 
+
+.winbg {
+    background-color: #DFF0FF;
+}
+
+.games {
+    color: #020D1F;
+    text-align: center;
+    font-size: 20px;
+    font-family: "Bahianita", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.winloss {
+    height: 41px;
+    width: 210px;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0; 
+    color: #EAF5FF;
+    text-align: center;
+    font-size: 20px;
+    font-family: "Inter", sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.teams {
+    color: #233754;
+    font-size: 18px;
+    font-family: "Bahianita", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.44px;
+    width: 400px;
+}
+
+.rank {
+    color: #020D1F;
+    text-align: center;
+    font-size: 26px;
+    font-family: "Bahianita", sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    width: 50px;
+}
+
+.tag {
+    height: 41px;
+    width: 50px;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0; 
+    color: #EAF5FF;
+    text-align: center;
+    font-size: 20px;
+    font-family: "Inter", sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.top {
+    text-align: center;
+    background-color: #436495;
+    column-gap: 0px;
+}

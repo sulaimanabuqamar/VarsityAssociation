@@ -1,0 +1,45 @@
+{% extends 'volleyball/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Stats2.css' %}">
+{% endblock%}
+{% block content %}
+
+{% include 'base/messages.html' %}
+<div class="table-container">
+   <table>
+      <tr class="top">
+         <th class="tag">#</th>
+         <th></th>
+         <th class="name">Player</th>
+         <th class="stat">ATT</th>
+         <th class="stat">K</th>
+         <th class="stat">ERR</th>
+         <th class="stat">DIG</th>
+         <th class="stat">BLK</th>
+         <th class="stat">CBLK</th>
+         <th class="stat">ACE</th>
+      </tr>
+      {% for player in players %}
+      <tr>
+         <td class="rank">{{ forloop.counter }}</td>
+         <td class="mw"><img class="mascot" src="{{ player.player_image.url }}" alt=""></td>
+         <td class="playername">{{ player.player_first_name }} {{ player.player_lastname }}</td>
+         <td class="games winbg  ">{{player.attack_attempts | default_if_none:'' }}
+         </td>
+         <td class="games"> {{player.kills | default_if_none:'' }}
+         </td>
+         <td class="games winbg">{{ player.errors| default_if_none:''   }}
+         </td>
+         <td class="games">{{ player.digs | default_if_none:''  }}
+         </td>
+         <td class="games winbg">{{ player.blocks | default_if_none:''  }}
+         </td>
+         <td class="games">{{ player.solo_blocks_and_assisted_blocks | default_if_none:''  }}</td>
+         <td class="games winbg">{{ player.service_aces | default_if_none:''  }}</td>
+      </tr>
+      {% endfor %}
+   </table>
+</div>
+{%endblock%}

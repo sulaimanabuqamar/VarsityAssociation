@@ -1,0 +1,29 @@
+.text {
+    font-size: 16px;
+    font-family: 'Roboto_Regular', sans-serif;
+    color: #233754;
+    margin: 5px 0;
+}
+
+.subtitle {
+    font-family: 'Roboto_Regular', sans-serif;
+    color: #233754;
+    margin-bottom: 30px;
+}
+
+iframe {
+    padding-left: 15%;
+    padding-right: 15%;
+    align-content: center;
+    width: 100%;
+    height: 400px;
+}
+
+.bold-text {
+    font-weight: bold;
+    font-size: 16px;
+    font-family: 'Roboto_Regular', sans-serif;
+    color: #233754;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

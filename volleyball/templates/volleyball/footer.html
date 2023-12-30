@@ -1,0 +1,74 @@
+{% load static %}
+<footer class="container">
+    <div class="footer">
+        <div class="About">
+            <a href="{% url 'home' %}">
+                <img class="logo" src="{% static '../media/images/Logo.png'%}" alt="DVA Logo">
+            </a>
+            <h2 class="footertitle">Varsity Association</h2>
+            <p class="footerabout">Fostering sports excellence in schools through dedicated leagues for volleyball,
+                basketball, and football.</p>
+        </div>
+        <div class="Leagues">
+            <h4 class="footersubtitle">Leagues</h4>
+            <a class="footertext" href="{% url 'football-schedule' %}">Football</a><br><br>
+            <a class="footertext" href="{% url 'volleyball-schedule' %}">Volleyball</a><br><br>
+            <a class="footertext" href="{% url 'schedule' %}">Basketball</a>
+        </div>
+        <div class="Legal">
+            <h4 class="footersubtitle">Legal</h4>
+            <a class="footertext" href="{% url 'volleyball-terms' %}">Terms</a><br><br>
+            <a class="footertext" href="{% url 'volleyball-privacy' %}">Privacy</a><br><br>
+            <a class="footertext" href="{% url 'volleyball-add-team' %}">Register</a>
+        </div>
+        <div class="Company">
+            <h4 class="footersubtitle">Company</h4>
+            <a class="footertext" href="{% url 'volleyball-about' %}">About Us</a><br><br>
+            <a class="footertext" href="{% url 'home' %}">Careers</a><br><br>
+            <a class="footertext" href="{% url 'volleyball-FAQs' %}">FAQs</a><br><br>
+            <a class="footertext" href="{% url 'volleyball-login' %}">Admin</a>
+        </div>
+
+        {% include 'base/contact-follow.html' %}
+    </div>
+</footer>
+<script src="{% static 'lib/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'lib/fontawesome/all.min.js' %}"></script>
+
+<script>
+    var currentTitle = $('title').text();
+    var capitalizedTitle = currentTitle.toUpperCase();
+    $('title').text(capitalizedTitle);
+    $(document).ready(function () {
+        $(".header-bars-icon").click(function () {
+            $(this).addClass('d-md-none').removeClass('d-md-block')
+            $(".nav-links-container").addClass('d-md-flex').removeClass("d-md-none");
+            $(".header-x-icon").addClass('d-md-block').removeClass('d-md-none')
+            $(".header").addClass("header-height");
+        });
+        $(".header-x-icon").click(function () {
+            $(this).addClass('d-md-none').removeClass('d-md-block')
+            $(".nav-links-container").addClass("d-md-none").removeClass("d-md-flex");
+            $(".header-bars-icon").addClass('d-md-block').removeClass('d-md-none')
+            $(".header").removeClass("header-height");
+        })
+
+
+        // Function to respond to media query changes
+        function handleMediaQueryChange(mediaQuery) {
+            if (!mediaQuery.matches) {
+                $(".nav-links-container,.header-bars-icon,.header-x-icon,.header").removeClass("d-md-flex d-md-none header-height d-md-block");
+            }
+        }
+
+        // Create a MediaQueryList object for the desired media query
+        const mediaQuery = window.matchMedia('(max-width: 768px)');
+
+        // Call the handler initially to set the initial state
+        handleMediaQueryChange(mediaQuery);
+
+        // Add a listener to respond to media query changes
+        mediaQuery.addListener(handleMediaQueryChange);
+
+    });
+</script>

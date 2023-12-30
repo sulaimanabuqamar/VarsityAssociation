@@ -1,0 +1,46 @@
+{% extends 'football/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Stats2.css' %}">
+{% endblock%}
+{% block content %}
+{% include 'base/messages.html' %}
+<div class="table-container">
+   <table>
+      <tr class="top">
+         <th class="tag">#</th>
+         <th></th>
+         <th class="name">Player</th>
+         <th class="stat">G</th>
+         <th class="stat">OG</th>
+         <th class="stat">A</th>
+         <th class="stat">SH</th>
+         <th class="stat">TCK</th>
+         <th class="stat">CR</th>
+         <th class="stat">SV</th>
+         <th class="stat">PK</th>
+      </tr>
+      {% for player in players %}
+      <tr>
+         <td class="rank">{{ forloop.counter }}</td>
+         <td class="mw"><img class="mascot" src="{{ player.player_image.url }}" alt=""></td>
+         <td class="playername">{{ player.player_first_name }} {{ player.player_last_name }}</td>
+         <td class="games winbg">{{ player.goals | default_if_none:'' }}
+         </td>
+         <td class="games ">{{ player.won_goals| default_if_none:''   }}
+         </td>
+         <td class="games winbg ">{{ player.assists | default_if_none:''   }}
+         </td>
+         <td class="games">{{ player.shots_on_goal | default_if_none:''  }}
+         </td>
+         <td class="games winbg">{{ player.tackles | default_if_none:''  }}</td>
+         <td class="games ">{{ player.crosses | default_if_none:''  }}</td>
+         <td class="games winbg ">{{ player.saves | default_if_none:''  }}</td>
+         <td class="games">{{player.penalty_kicks | default_if_none:''  }}</td>
+      </tr>
+      {% endfor %}
+   </table>
+</div>
+
+{%endblock%}

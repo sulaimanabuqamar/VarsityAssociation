@@ -1,0 +1,10 @@
+{% extends 'basketball/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/About.css' %}">
+{% endblock%}
+
+{% block content %}
+{% include 'base/About.html' %}
+{%endblock%}

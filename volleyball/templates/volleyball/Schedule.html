@@ -1,0 +1,70 @@
+{% extends 'volleyball/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Schedule.css' %}">
+{% endblock%}
+{% block content %}
+{% include 'base/messages.html' %}
+{% for month,games in games_per_month.items %}
+
+<div class="fill">
+   <div class="monthbox">
+      <p class="month">{{ month  }}
+   </div>
+   <div class="schedule">
+      {% for game,first_set  in games.items %}
+      <div class="game" onclick="window.location.href='{% url 'volleyball-boxscore' game_id=game.game_id %}'">
+         <div class="left">
+            <img class="teamlogo" src="{{ game.team_1.team_logo.url}}">
+            <p class="team">{{game.sets}}{{ game.team_1.team_abbreviation}}</p>
+
+         </div>
+         <div class="middle">
+            <p class="date">{{ game.game_date|date:"l, j" }}</p>
+            {% if game.sets == 1 %}
+            <div class="score">
+               {% if first_set.team_1_points > first_set.team_2_points %}
+               <p class="winscore">{{ first_set.team_1_points }}</p>
+               <div class="gamestatus">{{ game.game_status }}</div>
+               <p class="losescore">{{ first_set.team_2_points }}</p>
+               {% elif first_set.team_2_points > first_set.team_1_points %}
+               <p class="losescore">{{ first_set.team_1_points }}</p>
+               <div class="gamestatus">{{ game.game_status }}</div>
+               <p class="winscore">{{ first_set.team_2_points }}</p>
+               {% else %}
+               <p class="losescore">{{ first_set.team_1_points | default_if_none:'' }}</p>
+               <div class="gamestatus">{{ game.game_status }}</div>
+               <p class="losescore">{{ first_set.team_2_points | default_if_none:''}}</p>
+               {% endif %}
+            </div>
+            {% else %}
+            <div class="score">
+               {% if game.team_1_score > game.team_2_score %}
+               <p class="winscore">{{ game.team_1_score }}</p>
+               <div class="gamestatus">{{ game.game_status }}</div>
+               <p class="losescore">{{ game.team_2_score }}</p>
+               {% elif game.team_2_score > game.team_1_score %}
+               <p class="losescore">{{ game.team_1_score }}</p>
+               <div class="gamestatus">{{ game.game_status }}</div>
+               <p class="winscore">{{ game.team_2_score }}</p>
+               {% else %}
+               <p class="losescore">{{ game.team_1_score | default_if_none:'' }}</p>
+               <div class="gamestatus">{{ game.game_status }}</div>
+               <p class="losescore">{{ game.team_2_score | default_if_none:''}}</p>
+               {% endif %}
+            </div>
+            {% endif %}
+            <p class="vs">VS</p>
+         </div>
+
+         <div class="right">
+            <img class="teamlogo" src="{{ game.team_2.team_logo.url}}">
+            <p class="team">{{ game.team_2.team_abbreviation}}</p>
+         </div>
+      </div>
+      {% endfor %}
+   </div>
+   {% endfor %}
+
+   {%endblock%}

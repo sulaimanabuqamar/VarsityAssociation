@@ -1,0 +1,543 @@
+{% extends 'volleyball/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Schedule.css' %}">
+<link rel="stylesheet" href="{% static 'CSS/Stats2.css' %}">
+<style>
+	.top-set {
+		background: #233754;
+		;
+	}
+
+	.active-tab {
+		background: inherit;
+	}
+</style>
+{% endblock%}
+{% block content %}
+
+
+{% include 'base/messages.html' %}
+<div class="messages-container">
+	<ul class="messages" id="ajax-message">
+	</ul>
+	<p class="saving">Saving <i class="fa-solid fa-spinner fa-spin-pulse"></i></p>
+</div>
+<div class="game-info">
+	<p> <span class="game-label">Location</span> <span class="game-value">{{game.game_location}}</span>
+	</p>
+	<p><span class="game-label">Date</span> <span class="game-value">{{game.game_date}}</span></p>
+	<p><span class="game-label">Time</span> <span class="game-value">{{game.game_time}}</span></p>
+	<div class="game-status-container">
+		<label class="game-label">Status</label>
+		<select name="game_status" id="game-status">
+			<option value="Soon" {% if game.game_status == 'Soon' %} selected {% endif %}>Soon</option>
+			{% if game.sets == 1 %}
+			<option {% if game.game_status == 'Set 1' %} selected {% endif %} value="Set 1">Set 1</option>
+			{% else %}
+			{% for volley_set in sets %}
+			{% with set_number_str=volley_set.set_number|default_if_none:""|stringformat:"s" %}
+			{% with set_value='Set '|add:set_number_str %}
+			<option {% if game.game_status == set_value %} selected {% endif %} value="{{ set_value }}">Set
+				{{ volley_set.set_number }}
+			</option>
+			{% endwith %}
+			{% endwith %}
+			{% endfor %}
+
+			{% endif %}
+
+
+
+			<option value="Final" {% if game.game_status == 'Final' %} selected {% endif %}>Final</option>
+
+		</select>
+	</div>
+</div>
+{% if game.sets == 1 %}
+<div class="table-container">
+	<table>
+		<tr class="top">
+			<th class="name">
+				<p class="text-center">{{ game.team_1.team_name }}</p>
+			</th>
+			<th class="stat">VS</th>
+			<th class="name">
+				<p class="text-center">{{ game.team_2.team_name }}</p>
+			</th>
+		</tr>
+		<tr class="player-tr cursor-pointer set-tab" data-tab-id="{{v_set.set_number}}">
+			<td class="games winbg t1-points-{{sets.set_id}}">
+				{{ sets.team_1_points | default_if_none:''   }}
+			</td>
+			<td class="games" id="game-status-change">
+				{{game.game_status}}
+			</td>
+			<td class="games winbg t2-points-{{sets.set_id}}">
+				{{ sets.team_2_points| default_if_none:''   }}
+			</td>
+
+		</tr>
+	</table>
+
+</div>
+<div class="table-container">
+
+	<table>
+
+		<tr class="top">
+			<th class="tag">#</th>
+			<th></th>
+			<th class="name">{{ game.team_1.team_name }}</th>
+			<th class="stat">ATT</th>
+			<th class="stat">K</th>
+			<th class="stat">ERR</th>
+			<th class="stat">DIG</th>
+			<th class="stat">BLK</th>
+			<th class="stat">CBLK</th>
+			<th class="stat">ACE</th>
+		</tr>
+		{% for player,performance in players1_performance_dict.items %}
+		<tr class="player-tr">
+			<td class="rank">{{ player.player_shirt_number }}</td>
+			<td class="mw"><img class="mascot" src="{{ player.player_image.url }}" alt=""></td>
+			<td>{{ player.player_first_name }} {{ player.player_last_name }}</td>
+			<td>
+				<input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+					name="attack_attempts" class="games winbg  input-change"
+					value="{{ performance.attack_attempts | default_if_none:'' }}">
+			</td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}" name="kills"
+					class="games  input-change" value="{{ performance.kills | default_if_none:'' }}">
+			</td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}" name="errors"
+					class="games winbg input-change" value="{{ performance.errors| default_if_none:''   }}">
+			</td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}" name="digs"
+					class="games  input-change" value="{{ performance.digs | default_if_none:''  }}">
+			</td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}" name="blocks"
+					class="games winbg input-change" value="{{ performance.blocks | default_if_none:''  }}">
+			</td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+					name="solo_blocks_and_assisted_blocks" class="games input-change"
+					value="{{ performance.solo_blocks_and_assisted_blocks | default_if_none:''  }}"></td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+					name="service_aces" class="games winbg input-change"
+					value="{{ performance.service_aces | default_if_none:''  }}"></td>
+
+		</tr>
+		{% endfor %}
+	</table>
+	<table>
+		<tr class=" top">
+			<th class="tag">#</th>
+			<th></th>
+			<th class="name">{{ game.team_2.team_name }}</th>
+			<th class="stat">ATT</th>
+			<th class="stat">K</th>
+			<th class="stat">ERR</th>
+			<th class="stat">DIG</th>
+			<th class="stat">BLK</th>
+			<th class="stat">CBLK</th>
+			<th class="stat">ACE</th>
+		</tr>
+		{% for player,performance in players2_performance_dict.items %}
+		<tr class="player-tr ">
+			<td class="rank">{{ player.player_shirt_number }}</td>
+			<td class="mw"><img class="mascot" src="{{ player.player_image.url }}" alt=""></td>
+			<td>{{ player.player_first_name }} {{ player.player_last_name }}</td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+					name="attack_attempts" class="games winbg  input-change"
+					value="{{ performance.attack_attempts | default_if_none:'' }}">
+			</td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}" name="kills"
+					class="games  input-change" value="{{ performance.kills | default_if_none:'' }}">
+			</td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}" name="errors"
+					class="games winbg input-change" value="{{ performance.errors| default_if_none:''   }}">
+			</td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}" name="digs"
+					class="games  input-change" value="{{ performance.digs | default_if_none:''  }}">
+			</td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}" name="blocks"
+					class="games winbg input-change" value="{{ performance.blocks | default_if_none:''  }}">
+			</td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+					name="solo_blocks_and_assisted_blocks" class="games input-change"
+					value="{{ performance.solo_blocks_and_assisted_blocks | default_if_none:''  }}"></td>
+			<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+					name="service_aces" class="games winbg input-change"
+					value="{{ performance.service_aces | default_if_none:''  }}"></td>
+		</tr>
+		{% endfor %}
+
+	</table>
+
+
+</div>
+{% else %}
+<div class="table-container">
+	<table>
+		<tr class="top">
+			<th class="name">
+				<p class="text-center">{{ game.team_1.team_name }}</p>
+			</th>
+			<th class="stat">VS</th>
+			<th class="name">
+				<p class="text-center">{{ game.team_2.team_name }}</p>
+			</th>
+		</tr>
+		<tr class="player-tr">
+			<td class="games winbg " id="t1-score">
+				{{ game.team_1_score | default_if_none:''   }}
+			</td>
+			<td class="games">
+				Sets Won
+			</td>
+			<td class="games winbg" id="t2-score">
+				{{ game.team_2_score | default_if_none:''   }}
+			</td>
+
+		</tr>
+	</table>
+
+</div>
+
+<div class="table-container">
+	<table>
+		<tr class="top">
+			<th class="name">
+				<p class="text-center">{{ game.team_1.team_name }}</p>
+			</th>
+			<th class="stat">VS</th>
+			<th class="name">
+				<p class="text-center">{{ game.team_2.team_name }}</p>
+			</th>
+		</tr>
+		{% for v_set in sets %}
+		<tr class="player-tr cursor-pointer set-tab" data-tab-id="{{v_set.set_number}}">
+			<td class="games winbg t1-points-{{v_set.set_id}}">
+				{{ v_set.team_1_points | default_if_none:''   }}
+			</td>
+			<td class="games">
+				Set {{ v_set.set_number }}
+			</td>
+			<td class="games winbg t2-points-{{v_set.set_id}}">
+				{{ v_set.team_2_points | default_if_none:''   }}
+			</td>
+
+		</tr>
+		{% endfor %}
+	</table>
+
+</div>
+
+<div class="table-container">
+
+	<table id="table-1">
+		<thead>
+			<tr class=" top ">
+				<th class="tag" rowspan="2">#</th>
+				<th rowspan="2"></th>
+				<th class="name" rowspan="2">{{ game.team_2.team_name }}</th>
+				{% if count_sets == 3 %}
+				<th class="stat tab tab-1  active-tab cursor-pointer top-set" colspan="2" data-tab-id="1">Set 1</th>
+				<th class="stat tab tab-2 cursor-pointer top-set" colspan="2" data-tab-id="2">Set 2</th>
+				<th class="stat tab tab-3 cursor-pointer top-set" colspan="2" data-tab-id="3">Set 3</th>
+				<th class="top-set"></th>
+				{% else  %}
+				<th class="stat tab tab-1 active-tab cursor-pointer top-set" data-tab-id="1">Set 1</th>
+				<th class="stat tab tab-2 cursor-pointer top-set" data-tab-id="2">Set 2</th>
+				<th class="stat tab tab-3 cursor-pointer top-set" data-tab-id="3">Set 3</th>
+				<th class="stat tab tab-4 cursor-pointer top-set" data-tab-id="4">Set 4</th>
+				<th class="stat tab tab-5 cursor-pointer top-set" data-tab-id="5">Set 5</th>
+				<th class="top-set"></th>
+				<th class="top-set"></th>
+				{% endif %}
+
+			</tr>
+			<tr class=" top">
+				<th class="stat">ATT</th>
+				<th class="stat">K</th>
+				<th class="stat">ERR</th>
+				<th class="stat">DIG</th>
+				<th class="stat">BLK</th>
+				<th class="stat">CBLK</th>
+				<th class="stat">ACE</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for sets,per_set in players1_performance_dict.items %}
+			{% for player,performance in per_set.items %}
+			<tr class="player-tr tab-content tr-{{sets.set_number}}">
+				<td class="rank">{{ player.player_shirt_number }}</td>
+				<td class="mw"><img class="mascot" src="{{ player.player_image.url }}" alt=""></td>
+				<td>{{ player.player_first_name }} {{ player.player_last_name }}</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="attack_attempts" class="games winbg  input-change"
+						value="{{ performance.attack_attempts | default_if_none:'' }}">
+				</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="kills" class="games  input-change" value="{{ performance.kills | default_if_none:'' }}">
+				</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="errors" class="games winbg input-change"
+						value="{{ performance.errors| default_if_none:''   }}">
+				</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="digs" class="games  input-change" value="{{ performance.digs | default_if_none:''  }}">
+				</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="blocks" class="games winbg input-change"
+						value="{{ performance.blocks | default_if_none:''  }}">
+				</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="solo_blocks_and_assisted_blocks" class="games input-change"
+						value="{{ performance.solo_blocks_and_assisted_blocks | default_if_none:''  }}"></td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="service_aces" class="games winbg input-change"
+						value="{{ performance.service_aces | default_if_none:''  }}"></td>
+
+			</tr>
+			{% endfor %}
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<table id="table-2">
+		<thead>
+			<tr class=" top ">
+				<th class="tag" rowspan="2">#</th>
+				<th rowspan="2"></th>
+				<th class="name" rowspan="2">{{ game.team_2.team_name }}</th>
+				{% if count_sets == 3 %}
+				<th class="stat tab tab-1  active-tab cursor-pointer top-set" colspan="2" data-tab-id="1">Set 1</th>
+				<th class="stat tab tab-2 cursor-pointer top-set" colspan="2" data-tab-id="2">Set 2</th>
+				<th class="stat tab tab-3 cursor-pointer top-set" colspan="2" data-tab-id="3">Set 3</th>
+				<th class="top-set"></th>
+				{% else  %}
+				<th class="stat tab tab-1 active-tab cursor-pointer top-set" data-tab-id="1">Set 1</th>
+				<th class="stat tab tab-2 cursor-pointer top-set" data-tab-id="2">Set 2</th>
+				<th class="stat tab tab-3 cursor-pointer top-set" data-tab-id="3">Set 3</th>
+				<th class="stat tab tab-4 cursor-pointer top-set" data-tab-id="4">Set 4</th>
+				<th class="stat tab tab-5 cursor-pointer top-set" data-tab-id="5">Set 5</th>
+				<th class="top-set"></th>
+				<th class="top-set"></th>
+				{% endif %}
+
+			</tr>
+			<tr class=" top">
+				<th class="stat">ATT</th>
+				<th class="stat">K</th>
+				<th class="stat">ERR</th>
+				<th class="stat">DIG</th>
+				<th class="stat">BLK</th>
+				<th class="stat">CBLK</th>
+				<th class="stat">ACE</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for sets,per_set in players2_performance_dict.items %}
+			{% for player,performance in per_set.items %}
+			<tr class="player-tr tab-content tr-{{sets.set_number}}">
+				<td class="rank">{{ player.player_shirt_number }}</td>
+				<td class="mw"><img class="mascot" src="{{ player.player_image.url }}" alt=""></td>
+				<td>{{ player.player_first_name }} {{ player.player_last_name }}</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="attack_attempts" class="games winbg  input-change"
+						value="{{ performance.attack_attempts | default_if_none:'' }}">
+				</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="kills" class="games  input-change" value="{{ performance.kills | default_if_none:'' }}">
+				</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="errors" class="games winbg input-change"
+						value="{{ performance.errors| default_if_none:''   }}">
+				</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="digs" class="games  input-change" value="{{ performance.digs | default_if_none:''  }}">
+				</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="blocks" class="games winbg input-change"
+						value="{{ performance.blocks | default_if_none:''  }}">
+				</td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="solo_blocks_and_assisted_blocks" class="games input-change"
+						value="{{ performance.solo_blocks_and_assisted_blocks | default_if_none:''  }}"></td>
+				<td><input type="integer" data-player-id="{{player.player_id}}" data-set-id="{{sets.set_id}}"
+						name="service_aces" class="games winbg input-change"
+						value="{{ performance.service_aces | default_if_none:''  }}"></td>
+
+			</tr>
+			{% endfor %}
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+{% endif %}
+
+{%endblock%}
+
+{% block scripts %}
+<script>
+	$('.tab-content').hide();
+
+	// Show the first tab content
+	$('#table-1 .tr-1,#table-2 .tr-1').show();
+
+	// Click event for tabs
+	$('#table-1 .tab').on('click', function () {
+		// Hide all tab content
+		$('#table-1 .tab-content').hide();
+
+		// Remove 'active' class from all tabs
+		$(' #table-1 .tab').removeClass('active-tab');
+
+		// Show the clicked tab content
+		var tabId = $(this).data('tab-id');
+		$('#table-1 .tr-' + tabId).show();
+		// Add 'active' class to the clicked tab
+		$(this).addClass('active-tab');
+	});
+
+	// Click event for tabs
+	$('#table-2 .tab').on('click', function () {
+		// Hide all tab content
+		$('#table-2 .tab-content').hide();
+
+		// Remove 'active' class from all tabs
+		$(' #table-2 .tab').removeClass('active-tab');
+
+		// Show the clicked tab content
+		var tabId = $(this).data('tab-id');
+		$('#table-2 .tr-' + tabId).show();
+		// Add 'active' class to the clicked tab
+		$(this).addClass('active-tab');
+	});
+	$('.set-tab').on('click', function () {
+		var tabId = $(this).data('tab-id');
+		$('.tab-content').hide();
+		$('.tab').removeClass('active-tab');
+		$(`.tab-${tabId}`).addClass('active-tab');
+		// Show the first tab content
+		$(`#table-1 .tr-${tabId},#table-2 .tr-${tabId}`).show();
+		$("html, body").animate({
+			scrollTop: $("#table-1").offset().top - 100
+		}, 1000);
+	})
+</script>
+
+<script>
+	$(document).ready(function () {
+		let timeout = null;
+		$('.input-change').on('keyup', function () {
+			var input_value = parseInt($(this).val());
+			input_value = isNaN(input_value) ? '' : input_value
+			var column = $(this).attr('name')
+			var player_id = $(this).attr('data-player-id')
+			var set_id = $(this).attr('data-set-id')
+			clearTimeout(timeout);
+			timeout = setTimeout(
+				function () {
+					saveData(false, column, player_id, input_value, set_id)
+				}
+				, 1000);
+		});
+
+		$('#game-status').on('change', function () {
+			game_status_change = 'yes'
+			saveData(game_status_change)
+		});
+
+		function saveData(game_status_change = false, column = '', player_id = '', input_value = '', set_id = null) {
+			$("#ajax-message").html('')
+			game_status = $('#game-status').val()
+
+			data = {
+				input_value: input_value,
+				player_id: player_id,
+				column: column,
+				csrfmiddlewaretoken: '{{ csrf_token }}',
+				game_status_change: game_status_change,
+				game_status: game_status
+			}
+
+			$('.saving').show()
+			var url = `{% url 'volleyball-save-scores' game_id=game.game_id %}`
+			if (set_id !== null) {
+				url = `{% url 'volleyball-save-scores' game_id=game.game_id %}${set_id}/`
+			}
+			$.ajax({
+				type: 'POST',
+				url: url,
+				data: data,
+			}).then(function (response) {
+				$('.saving').hide()
+				if (response.hasOwnProperty('error')) {
+					$("#ajax-message").html(`<li class="error">${response.error}</li>`)
+				}
+				if (response.hasOwnProperty('redirect')) {
+					window.location.href = response.redirect
+				}
+				if (response.hasOwnProperty('success')) {
+					$("#ajax-message").html(`<li class="success">${response.success}</li>`)
+					$('#game-status-change').html(response.game.game_status)
+					if (!game_status_change) {
+						performances = response.player_peformances
+						performances.forEach((item) => {
+							for (i in item) {
+								if (i == 'points') {
+									$('#points-' + item.player_id).html(item.points)
+								} else {
+									$(`input[name="${i}-${item.player_id}"]`).val(item[i])
+								}
+							}
+						});
+
+						t1_score = response.game.team_1_score
+						t2_score = response.game.team_2_score
+						$('#t1-score').html(t1_score)
+						$('#t2-score').html(t2_score)
+
+						response.volley_sets.forEach(function (volley_set) {
+							$(`.t1-points-${volley_set.set_id}`).html(volley_set.team_1_points)
+							$(`.t2-points-${volley_set.set_id}`).html(volley_set.team_2_points)
+							if (volley_set.team_1_points > volley_set.team_2_points) {
+								$(`.t1-points-${volley_set.set_id}`).addClass('winscore').removeClass('losescore')
+								$(`.t2-points-${volley_set.set_id}`).addClass('losescore').removeClass('winscore')
+							}
+							else if (volley_set.team_1_points < volley_set.team_2_points) {
+								$(`.t1-points-${volley_set.set_id}`).addClass('losescore').removeClass('winscore')
+								$(`.t2-points-${volley_set.set_id}`).addClass('winscore').removeClass('losescore')
+							}
+							else {
+								$(`.t1-points-${volley_set.set_id}`).addClass('losescore').removeClass('winscore')
+								$(`.t2-points-${volley_set.set_id}`).addClass('losescore').removeClass('winscore')
+							}
+						})
+
+						if (t1_score > t2_score) {
+							$('#t1-score').addClass('winscore').removeClass('losescore')
+							$('#t2-score').addClass('losescore').removeClass('winscore')
+						}
+						else if (t1_score < t2_score) {
+							$('#t1-score').addClass('losescore').removeClass('winscore')
+							$('#t2-score').addClass('winscore').removeClass('losescore')
+						}
+						else {
+							$('#t1-score').addClass('losescore').removeClass('winscore')
+							$('#t2-score').addClass('losescore').removeClass('winscore')
+						}
+					}
+				}
+			}).catch(function (error) {
+				$('.saving').hide()
+				$("#ajax-message").html(`<li class="error">There was error in saving ${column}. Please enter value again</li>`)
+			});
+		}
+	});
+</script>
+{% endblock %}

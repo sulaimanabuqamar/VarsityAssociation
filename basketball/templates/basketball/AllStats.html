@@ -1,0 +1,50 @@
+{% extends 'basketball/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Stats2.css' %}">
+{% endblock%}
+{% block content %}
+{% include 'base/messages.html' %}
+<div class="table-container">
+   <table>
+      <tr class="top">
+         <th class="tag">#</th>
+         <th></th>
+         <th class="name">Player</th>
+         <th class="stat">FG</th>
+         <th class="stat">FG%</th>
+         <th class="stat">3PT</th>
+         <th class="stat">3PT%</th>
+         <th class="stat">FT</th>
+         <th class="stat">FT%</th>
+         <th class="stat">RBD</th>
+         <th class="stat">AST</th>
+         <th class="stat">STL</th>
+         <th class="stat">BLK</th>
+         <th class="stat">TOVS</th>
+         <th class="stat">PTS</th>
+      </tr>
+      {% for player in players %}
+      <tr>
+         <td class="rank">{{ forloop.counter }}</td>
+         <td class="mw"><img class="mascot" src="{{ player.player_image.url }}" alt=""></td>
+         <td class="playername">{{ player.player_first_name }} {{ player.player_last_name }}</td>
+         <td class="games winbg">{{ player.field_goals|default_if_none:'-' }}</td>
+         <td class="games">{{ player.field_goals_percentage|floatformat:2 |default_if_none:'-'}}</td>
+         <td class="games winbg">{{ player.three_pointers |default_if_none:'-' }}</td>
+         <td class="games">{{ player.three_pointers_percentage |floatformat:2 |default_if_none:'-' }}</td>
+         <td class="games winbg">{{ player.free_throws |default_if_none:'-' }}</td>
+         <td class="games">{{ player.free_throws_percentage|floatformat:2 |default_if_none:'-' }}</td>
+         <td class="games winbg">{{ player.rebounds |default_if_none:'-' }}</td>
+         <td class="games">{{ player.assists |default_if_none:'-' }}</td>
+         <td class="games winbg">{{ player.steals |default_if_none:'-' }}</td>
+         <td class="games">{{ player.blocks |default_if_none:'-' }}</td>
+         <td class="games winbg">{{ player.turnovers |default_if_none:'-' }}</td>
+         <td class="games">{{ player.points |default_if_none:'-' }}</td>
+      </tr>
+      {% endfor %}
+   </table>
+</div>
+
+{%endblock%}

@@ -1,0 +1,228 @@
+{% extends 'football/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Schedule.css' %}">
+<link rel="stylesheet" href="{% static 'CSS/Stats2.css' %}">
+{% endblock%}
+{% block content %}
+
+{% include 'base/messages.html' %}
+<div class="messages-container">
+      <ul class="messages" id="ajax-message">
+
+      </ul>
+      <p class="saving">Saving <i class="fa-solid fa-spinner fa-spin-pulse"></i></p>
+</div>
+<div class="game-info">
+      <p> <span class="game-label">Location</span> <span class="game-value">{{game.game_location}}</span>
+      </p>
+      <p><span class="game-label">Date</span> <span class="game-value">{{game.game_date}}</span></p>
+      <p><span class="game-label">Time</span> <span class="game-value">{{game.game_time}}</span></p>
+      <div class="game-status-container">
+            <label class="game-label">Status</label>
+            <select name="game_status" id="game-status">
+                  {%for v,l in game_statuses %}
+
+                  <option {% if v == game.game_status %} selected {% endif %} value="{{v}}">{{l}}</option>
+
+                  {% endfor %}
+
+            </select>
+      </div>
+</div>
+
+<div class="table-container">
+      <table>
+            <tr class="top">
+                  <th class="name">
+                        <p class="text-center">{{ game.team_1.team_name }}</p>
+                  </th>
+                  <th class="stat">VS</th>
+                  <th class="name">
+                        <p class="text-center">{{ game.team_2.team_name }}</p>
+                  </th>
+            </tr>
+            <tr class="player-tr">
+                  <td class="games winbg " id="t1-score">
+                        {{ game.team_1_score | default_if_none:''   }}
+                  </td>
+                  <td class="games" id="game-status-change">
+                        {{game.game_status}}
+                  </td>
+                  <td class="games winbg" id="t2-score">
+                        {{ game.team_2_score | default_if_none:''   }}
+                  </td>
+
+            </tr>
+      </table>
+
+</div>
+
+<div class="table-container">
+      <table>
+            <tr class="top">
+                  <th class="tag">#</th>
+                  <th></th>
+                  <th class="name">{{ game.team_1.team_name }}</th>
+                  <th class="stat">G</th>
+                  <th class="stat">OG</th>
+                  <th class="stat">A</th>
+                  <th class="stat">SH</th>
+                  <th class="stat">TCK</th>
+                  <th class="stat">CR</th>
+                  <th class="stat">SV</th>
+                  <th class="stat">PK</th>
+            </tr>
+            {% for player,performance in players1_performance_dict.items %}
+            <tr class="player-tr">
+                  <td class="rank">{{ player.player_shirt_number }}</td>
+                  <td class="mw"><img class="mascot" src="{{ player.player_image.url }}" alt=""></td>
+                  <td>{{ player.player_first_name }} {{ player.player_last_name }}</td>
+                  <td><input type="integer" name="goals-{{player.player_id}}" class="games winbg  input-change"
+                              value="{{ performance.goals | default_if_none:'' }}">
+                  </td>
+                  <td><input type="integer" name="own_goals-{{player.player_id}}" class="games  input-change"
+                              value="{{ performance.own_goals | default_if_none:'' }}">
+                  </td>
+                  <td><input type="integer" name="assists-{{player.player_id}}" class="games winbg input-change"
+                              value="{{ performance.assists | default_if_none:''   }}">
+                  </td>
+                  <td><input type="integer" name="shots_on_goal-{{player.player_id}}" class="games  input-change"
+                              value="{{ performance.shots_on_goal | default_if_none:''  }}">
+                  </td>
+                  <td><input type="integer" name="tackles-{{player.player_id}}" class="games winbg input-change"
+                              value="{{ performance.tackles | default_if_none:''  }}"></td>
+                  <td><input type="integer" name="crosses-{{player.player_id}}" class="games input-change"
+                              value="{{ performance.crosses | default_if_none:''  }}"></td>
+                  <td><input type="integer" name="saves-{{player.player_id}}" class="games winbg input-change"
+                              value="{{ performance.saves | default_if_none:''  }}"></td>
+                  <td><input type="integer" name="penalty_kicks-{{player.player_id}}" class="games  input-change"
+                              value="{{performance.penalty_kicks | default_if_none:''  }}"></td>
+            </tr>
+            {% endfor %}
+      </table>
+      <table>
+            <tr class=" top">
+                  <th class="tag">#</th>
+                  <th></th>
+                  <th class="name">{{ game.team_2.team_name }}</th>
+                  <th class="stat">G</th>
+                  <th class="stat">OG</th>
+                  <th class="stat">A</th>
+                  <th class="stat">SH</th>
+                  <th class="stat">TCK</th>
+                  <th class="stat">CR</th>
+                  <th class="stat">SV</th>
+                  <th class="stat">PK</th>
+            </tr>
+            {% for player, performance in players2_performance_dict.items %}
+            <tr class="player-tr">
+                  <td class="rank">{{ player.player_shirt_number }}</td>
+                  <td class="mw"><img class="mascot" src="{{ player.player_image.url }}" alt=""></td>
+                  <td>{{ player.player_first_name }} {{ player.player_last_name }}</td>
+                  <td><input type="integer" name="goals-{{player.player_id}}" class="games winbg  input-change"
+                              value="{{ performance.goals | default_if_none:'' }}">
+                  </td>
+                  <td><input type="integer" name="own_goals-{{player.player_id}}" class="games  input-change"
+                              value="{{ performance.own_goals | default_if_none:'' }}">
+                  </td>
+                  <td><input type="integer" name="assists-{{player.player_id}}" class="games winbg input-change"
+                              value="{{ performance.assists | default_if_none:''   }}">
+                  </td>
+                  <td><input type="integer" name="shots_on_goal-{{player.player_id}}" class="games  input-change"
+                              value="{{ performance.shots_on_goal | default_if_none:''  }}">
+                  </td>
+                  <td><input type="integer" name="tackles-{{player.player_id}}" class="games winbg input-change"
+                              value="{{ performance.tackles | default_if_none:''  }}"></td>
+                  <td><input type="integer" name="crosses-{{player.player_id}}" class="games input-change"
+                              value="{{ performance.crosses | default_if_none:''  }}"></td>
+                  <td><input type="integer" name="saves-{{player.player_id}}" class="games winbg input-change"
+                              value="{{ performance.saves | default_if_none:''  }}"></td>
+                  <td><input type="integer" name="penalty_kicks-{{player.player_id}}" class="games  input-change"
+                              value="{{performance.penalty_kicks | default_if_none:''  }}"></td>
+            </tr>
+            {% endfor %}
+      </table>
+</div>
+
+
+{%endblock%}
+
+{% block scripts %}
+
+<script>
+      $(document).ready(function () {
+            let timeout = null;
+            $('.input-change').on('keyup', function () {
+                  var input_value = parseInt($(this).val());
+                  input_value = isNaN(input_value) ? '' : input_value
+                  var input_name_split = $(this).attr('name').split('-')
+                  var player_id = input_name_split[1]
+                  var column = input_name_split[0]
+                  clearTimeout(timeout);
+                  timeout = setTimeout(
+                        function () {
+                              saveData(false, column, player_id, input_value)
+                        }
+                        , 1200);
+            });
+
+            $('#game-status').on('change', function () {
+                  game_status_change = 'yes'
+                  saveData(game_status_change)
+            });
+
+            function saveData(game_status_change = false, column = '', player_id = '', input_value = '') {
+                  $("#ajax-message").html('')
+                  game_status = $('#game-status').val()
+                  data = {
+                        input_value: input_value,
+                        player_id: player_id,
+                        column: column,
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        game_status_change: game_status_change,
+                        game_status: game_status,
+                  }
+
+                  $('.saving').show()
+                  $.ajax({
+                        type: 'POST',
+                        url: "{% url 'football-save-scores' game_id=game.game_id %}",
+                        data: data,
+                  }).then(function (response) {
+                        $('.saving').hide()
+                        if (response.hasOwnProperty('error')) {
+                              $("#ajax-message").html(`<li class="error">${response.error}</li>`)
+                        }
+                        if (response.hasOwnProperty('redirect')) {
+                              window.location.href = response.redirect
+                        }
+                        if (response.hasOwnProperty('success')) {
+                              $("#ajax-message").html(`<li class="success">${response.success}</li>`)
+                              $('#game-status-change').html(response.game.game_status)
+                              if (!game_status_change) {
+                                    performances = response.player_peformances
+                                    performances.forEach((item) => {
+                                          for (i in item) {
+                                                if (i == 'points') {
+                                                      $('#points-' + item.player_id).html(item.points)
+                                                } else {
+                                                      $(`input[name="${i}-${item.player_id}"]`).val(item[i])
+                                                }
+                                          }
+                                    });
+                                    t1_score = response.game.team_1_score
+                                    t2_score = response.game.team_2_score
+                                    $('#t1-score').html(t1_score)
+                                    $('#t2-score').html(t2_score)
+                              }
+                        }
+                  }).catch(function (error) {
+                        $('.saving').hide()
+                        $("#ajax-message").html(`<li class="error">There was error in saving ${column}. Please enter value again</li>`)
+                  });
+            }
+      });
+</script>
+{% endblock %}

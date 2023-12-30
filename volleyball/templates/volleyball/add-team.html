@@ -1,0 +1,432 @@
+{% extends 'volleyball/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Register.css' %}">
+{% endblock%}
+{% block content %}
+{% if code_error %}
+<div class="team-modal">
+   <div class="team-reg">
+
+      <div class="x-icon cursor-pointer">
+         &#x2715;
+      </div>
+      <div class="messages-container">
+         {% if messages %}
+         <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+               {% endfor %}
+         </ul>
+         {% endif %}
+      </div>
+
+      <a href="{% url 'home' %}" class="company">Varsity Association</a>
+
+      <p class="title">Team Registration</p>
+      <p id="code-errors">
+
+      </p>
+      <div class="input-container">
+         <div class="input-group">
+            <input type="text" class="code-input" placeholder="W" maxlength="1" id="team-reg-input1">
+            <input type="text" class="code-input" placeholder="X" maxlength="1" id="team-reg-input2">
+            <input type="text" class="code-input" placeholder="L" maxlength="1" id="team-reg-input3">
+
+            <span class="dash">-</span>
+
+            <input type="text" class="code-input" placeholder="9" maxlength="1" id="team-reg-input4">
+            <input type="text" class="code-input" placeholder="6" maxlength="1" id="team-reg-input5">
+            <input type="text" class="code-input" placeholder="K" maxlength="1" id="team-reg-input6">
+         </div>
+      </div>
+   </div>
+</div>
+{%endif%}
+<div class="fill">
+   <div class="messages-container">
+
+      <ul id="code-success">
+
+      </ul>
+
+   </div>
+   <form method="POST" action="{% url 'volleyball-add-team' %}" enctype="multipart/form-data">
+
+      <input type="hidden" id="team_code_verified" name="team_code">
+      <input type="hidden" id="previous_url" value="{{previous_url}}">
+      <div class="title">Team Information</div>
+      <div class="forms1">
+         <div>
+            {{team_form.team_name}}
+            {{team_form.team_name.errors}}
+         </div>
+         <div>
+            {{team_form.team_abbreviation}}
+            {{team_form.team_abbreviation.errors}}
+         </div>
+      </div>
+      <div class=" subtitle">Team Logo
+      </div>
+
+      <div class="file-upload-container ">
+         <div class="form2">
+            <div class="file-upload">
+               <div class="upload-icon">
+                  <span class="upload-icon-i">
+                     <i class="fas fa-cloud-upload-alt"></i>
+                  </span>
+                  <br>
+                  <span>Drag Image to Upload or Click to Select</span>
+
+               </div>
+               {{team_form.team_logo}}
+            </div>
+         </div>
+         <div class="preview-container">
+            <img class="image-preview" src="#" alt="Uploaded Image">
+         </div>
+      </div>
+      {{team_form.team_logo.errors}}
+
+      <div class="subtitle">Manager Contact</div>
+      <div class="forms1">
+         <div>
+            {{team_form.manager_first_name}}
+            {{team_form.manager_first_name.errors}}
+         </div>
+         <div>
+            {{team_form.manager_last_name}}
+            {{team_form.manager_last_name.errors}}
+         </div>
+      </div>
+      <div class="forms1">
+         <div>
+            {{team_form.manager_phone_number}}
+            {{team_form.manager_phone_number.errors}}
+         </div>
+         <div>
+            {{team_form.manager_email}}
+            {{team_form.manager_email.errors}}
+         </div>
+
+
+      </div>
+
+
+      <div class="title team-roaster">Team Roster</div>
+      <div id="player-section">
+         <!-- Display non-field errors -->
+
+         {% csrf_token %}
+         <div class="messages-container">
+            {% if team_form.non_field_errors %}
+
+            <ul>
+               {% for error in team_form.non_field_errors %}
+               <li class="error">{{ error }}</li>
+               {%endfor%}
+            </ul>
+            {% endif %}
+         </div>
+
+         {{ player_formset.management_form }}
+
+
+         {{ form.id }}
+         {% for form in player_formset %}
+         <div class="player-count">
+            <div class="subtitle">
+               {% with counter=forloop.counter %}
+               {% with mod_100=100|divisibleby:counter  %}
+               {% with mod_10=10|divisibleby:counter  %}
+               {% if mod_10 == 1 and mod_100 != 11 %}
+               {{counter}}<sup>st</sup>
+               {% elif mod_10 == 2 and mod_100 != 12 %}
+               {{counter}} <sup>nd</sup>
+               {%  elif mod_10 == 3 and mod_100 != 13 %}
+               {{counter}}<sup>rd</sup>
+               {% else %}
+               {{counter}}<sup>th</sup>
+               {%endif%}
+               {%endwith%}
+               {%endwith%}
+               {%endwith%}
+               Player
+            </div>
+            <div class="forms1">
+               <div>
+                  {{form.player_first_name}}
+                  {{form.player_first_name.errors}}
+               </div>
+               <div>
+                  {{form.player_last_name}}
+                  {{form.player_last_name.errors}}
+               </div>
+            </div>
+            <div class="forms1">
+               <div>
+                  {{form.player_phone_number}}
+                  {{form.player_phone_number.errors}}
+               </div>
+               <div>
+                  {{form.player_email}}
+                  {{form.player_email.errors}}
+               </div>
+
+
+            </div>
+            <div class="forms1">
+               <div>
+                  {{form.player_shirt_number}}
+                  {{form.player_shirt_number.errors}}
+               </div>
+
+               <div>
+                  {{form.player_date_of_birth}}
+                  {{form.player_date_of_birth.errors}}
+               </div>
+
+            </div>
+            <div class="subtitle">Player image (optional)</div>
+            <div class="file-upload-container ">
+               <div class="form2">
+                  <div class="file-upload">
+                     <div class="upload-icon">
+                        <span class="upload-icon-i">
+                           <i class="fas fa-cloud-upload-alt"></i>
+                        </span>
+                        <br>
+                        <span>Drag Image to Upload or Click to Select</span>
+
+                     </div>
+                     {{form.player_image}}
+                  </div>
+               </div>
+               <div class="preview-container">
+                  <img class="image-preview" src="#" alt="Uploaded Image">
+               </div>
+            </div>
+            {{form.player_image.errors}}
+            <hr>
+         </div>
+         {%endfor%}
+      </div>
+      <br>
+      <button type="button" class="submit" id="addPlayerField">Add Another Player</button>
+      <br><br>
+      <input type="checkbox" name="check1" class="check">
+      <label for="check1.id_for_label" class="checktext">The person filling this form is the manager or a
+         school administrator.</label><br>
+      <input type="checkbox" name="check2" class="check">
+      <label for="check2.id_for_label" class="checktext">All players have a team jersey.</label><br>
+      <input type="checkbox" name="check3" class="check">
+      <label for="check3.id_for_label" class="checktext">I agree to the terms and conditions.</label><br><br><br>
+      <input type="submit" class="submit">
+
+   </form>
+</div>
+{%endblock%}
+
+{% block scripts %}
+<script>
+   $(document).ready(function () {
+      $('.team-reg .x-icon').click(function () {
+         window.location.href = $('#previous_url').val()
+      })
+      $(".code-input").keyup(function () {
+         var maxLength = parseInt($(this).attr("maxlength"));
+         var currentLength = $(this).val().length;
+         var team_code = $("#team-reg-input1").val() + $("#team-reg-input2").val() + $("#team-reg-input3").val() +
+            "-" +
+            $("#team-reg-input4").val() + $("#team-reg-input5").val() + $("#team-reg-input6").val();
+         if (team_code.length == 7) {
+            $(this).val($(this).val().toUpperCase());
+            submitForm(team_code.toUpperCase());
+         }
+         if (currentLength === maxLength) {
+            var nextInput = $(this).nextAll(".code-input:first").focus();
+            $(this).val($(this).val().toUpperCase());
+            if (nextInput.length) {
+               nextInput.focus();
+            }
+         }
+      });
+      // Add event listeners for backspace key
+      $('.code-input').on('keydown', function (e) {
+         $(this).val('')
+         if (e.keyCode === 8 && $(this).val().length === 0 && $(this).index() !== 0) {
+            $(this).prevAll(".code-input:first").focus();
+         }
+      });
+
+      function submitForm(team_code) {
+         data = {
+            team_code: team_code,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+         }
+         $.ajax({
+            type: "POST",
+            url: "{% url 'volleyball-verify-team-code' %}", // Replace with your server-side script
+            data: data
+         }).then(function (res) {
+            if (res.hasOwnProperty('error')) {
+               $("#code-errors").html(`<li class="error">${res.error}</li>`)
+            }
+            if (res.hasOwnProperty('success')) {
+               $('#team_code_verified').val(team_code)
+               $("#code-success").html(`<li class="success">${res.success}</li>`)
+
+               $(`.team-modal`).remove()
+            }
+         }).catch(function (error) {
+            c
+            $("#code-errors").html(`<li class="error">There was error. Please try enter the code again.</li>`)
+
+         })
+
+      }
+
+      // Function to get the appropriate ordinal indicator for a number
+      function getOrdinalIndicator(number) {
+         var suffix = "th";
+         if (number % 10 === 1 && number % 100 !== 11) {
+            suffix = "st";
+         } else if (number % 10 === 2 && number % 100 !== 12) {
+            suffix = "nd";
+         } else if (number % 10 === 3 && number % 100 !== 13) {
+            suffix = "rd";
+         }
+         return suffix;
+      }
+
+      $("#addPlayerField").click(function () {
+         var prefix = $('.player-count').length
+         var player_count = prefix + 1
+
+         $('#remove-player').remove()
+         var ordinalIndicator = getOrdinalIndicator(player_count);
+         remove = ''
+         if (player_count > 10) {
+            remove = '<button type="button" class="submit btn-error" id="remove-player">Remove A Player</button>'
+         }
+
+         $('#id_form-TOTAL_FORMS').val(player_count)
+         var newPlayer = `
+         <div class="player-count">
+            <div class="subtitle">
+               ${player_count}<sup>${ordinalIndicator}</sup>
+               Player
+            </div>
+            <div class="forms1">
+               <div>
+                  <input type="text" name="form-${prefix}-player_first_name" class="form3" placeholder="First name" required="required" maxlength="25" id="id_form-${prefix}-player_first_name">
+               </div>
+               <div>
+                  <input type="text" name="form-${prefix}-player_last_name" class="form3" placeholder="Last name" required="required" maxlength="25" id="id_form-${prefix}-player_last_name">
+               </div>
+            </div>
+            <div class="forms1">
+               <div>
+                  <input type="text" name="form-${prefix}-player_phone_number" class="form3" placeholder="Phone number" required="required" id="id_form-${prefix}-player_phone_number">
+               </div>
+               <div>
+                  <input type="email" name="form-${prefix}-player_email" class="form3" placeholder="Email address" required="required" maxlength="25" id="id_form-${prefix}-player_email">
+               </div>
+            </div>
+            <div class="forms1">
+               <div>
+                  <input type="number" name="form-${prefix}-player_shirt_number" class="form3" placeholder="player shirt number" required="required" id="id_form-${prefix}-player_shirt_number">
+               </div>
+               <div>
+                  <input type="text" name="form-${prefix}-player_date_of_birth" class="form3" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Date of Birth" required="required" id="id_form-${prefix}-player_date_of_birth">
+               </div>
+            </div>
+            <div class="subtitle">Player image (optional)</div>
+            <div class="file-upload-container ">
+               <div class="form2">
+                  <div class="file-upload">
+                     <div class="upload-icon">
+                         <span class="upload-icon-i">
+                           <i class="fas fa-cloud-upload-alt"></i>
+                        </span>
+                        <br>
+                        <span>Drag Image to Upload or Click to Select</span>
+                     </div>
+                     <input type="file" name="form-${prefix}-player_image" class="file-input" accept="image/*" placeholder="Player image"  id="id_form-${prefix}-player_image">
+                  </div>
+               </div>
+               <div class="preview-container">
+                  <img class="image-preview" src="#" alt="Uploaded Image">
+               </div>
+            </div>
+           ${remove}
+            <hr>
+         </div>
+            `
+         $("#player-section").append(newPlayer);
+
+      });
+      $(document).on('click', "#remove-player", function () {
+         $(this).parent(".player-count").remove();
+         var player_count = $('.player-count').length
+         remove = ''
+         if (player_count > 6) {
+            remove = '<button type="button" class="submit btn-error" id="remove-player">Remove A Player</button>'
+         }
+         $('.player-count:last').append(remove)
+
+      });
+
+      // Handle file input change event
+      $(document).on('change', '.file-input', function (e) {
+         var container = $(this).closest(".file-upload-container");
+         var file = e.target.files[0];
+         if (file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+               container.find('.image-preview').attr('src', e.target.result);
+               container.find('.image-preview').show();
+            };
+            reader.readAsDataURL(file);
+         }
+      });
+
+      // Handle drag and drop functionality
+      $(document).on('dragover', 'file-upload', function (e) {
+         e.preventDefault();
+         $(this).addClass('dragover');
+      });
+
+      $(document).on('dragleave', '.file-upload', function (e) {
+         e.preventDefault();
+         $(this).removeClass('dragover');
+      });
+
+      $(document).on('drop', '.file-upload', function (e) {
+         e.preventDefault();
+         var container = $(this).closest(".file-upload-container");
+         $(this).removeClass('dragover');
+         var file = e.originalEvent.dataTransfer.files[0];
+         if (file) {
+            $(container + ' .file-input').prop('files', e.originalEvent.dataTransfer.files);
+            var reader = new FileReader();
+            reader.onload = function (e) {
+               container.find('.image-preview').attr('src', e.target.result);
+               container.find('.image-preview').show();
+            };
+            reader.readAsDataURL(file);
+         }
+      });
+
+      // Click event on upload icon
+      $(document).on('click', '.upload-icon', function () {
+         var container = $(this).closest(".file-upload-container");
+         container.find('.file-input').trigger('click')
+      });
+   });
+
+
+</script>
+{% endblock %}

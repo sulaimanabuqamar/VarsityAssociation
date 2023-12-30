@@ -1,0 +1,52 @@
+{% extends 'basketball/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Schedule.css' %}">
+{% endblock%}
+{% block content %}
+{% include 'base/messages.html' %}
+{% for month,games in games_per_month.items %}
+
+<div class="fill">
+	<div class="monthbox">
+		<p class="month">{{ month  }}
+	</div>
+	<div class="schedule">
+		{% for Game in games %}
+		<div class="game" onclick="window.location.href='{% url 'AdminBoxscore' game_id=Game.game_id %}'">
+			<div class="left">
+				<img class="teamlogo" src="{{Game.team_1.team_logo.url}}">
+				<p class="team">{{Game.team_1.team_abbreviation}}</p>
+			</div>
+			<div class="middle">
+				<p class="date">{{ Game.game_date|date:"l, j" }}</p>
+				<div class="score">
+					{% if Game.team_1_score > Game.team_2_score %}
+					<p class="winscore">{{ Game.team_1_score }}</p>
+					<div class="gamestatus">{{ Game.game_status }}</div>
+					<p class="losescore">{{ Game.team_2_score }}</p>
+					{% elif Game.team_2_score > Game.team_1_score %}
+					<p class="losescore">{{ Game.team_1_score }}</p>
+					<div class="gamestatus">{{ Game.game_status }}</div>
+					<p class="winscore">{{ Game.team_2_score }}</p>
+					{% else %}
+					<p class="losescore">{{ Game.team_1_score | default_if_none:'' }}</p>
+					<div class="gamestatus">{{ Game.game_status }}</div>
+					<p class="losescore">{{ Game.team_2_score | default_if_none:'' }}</p>
+					{% endif %}
+				</div>
+
+				<p class="vs">VS</p>
+			</div>
+			<div class="right">
+				<img class="teamlogo" src="{{Game.team_2.team_logo.url}}">
+				<p class="team">{{Game.team_2.team_abbreviation}}</p>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% endfor %}
+
+{%endblock%}

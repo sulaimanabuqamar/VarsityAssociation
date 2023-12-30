@@ -1,0 +1,31 @@
+<header class="header container">
+    <div class="header-menu-icons">
+        <div class="header-bars-icon">
+            &#8801;
+        </div>
+        <div class="header-x-icon">
+            &#x2715;
+        </div>
+    </div>
+    <div class="nav-links-container">
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+            <a class="headertext" href="{% url 'adminSchedule' %}">ADMIN SCHEDULE</a>
+            {%else%}
+            <a class="headertext" href="{% url 'schedule' %}">SCHEDULE</a>
+            {% endif %}
+            <div class="headerdivider"></div>
+            <a class="headertext" href="{% url 'teams' %}">TEAMS</a>
+            <div class="headerdivider"></div>
+            <a class="headertext" href="{% url 'stats' %}">STATS</a>
+            <div class="headerdivider"></div>
+            <a class="headertext" href="{% url 'add-team' %}">REGISTER</a>
+            <div class="headerdivider"></div>
+            <a class="headertext" href="{% url 'about' %}">ABOUT</a>
+            {% if user.is_authenticated %}
+            <div class="headerdivider"></div>
+            <a class="headertext" href="{% url 'logout' %}">LOGOUT</a>
+            {% endif %}
+        </div>
+    </div>
+</header>

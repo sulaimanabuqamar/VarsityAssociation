@@ -1,0 +1,127 @@
+.statsbox {
+    text-align: center;
+    width: 380px;
+    height: 400px;
+    border-radius: 15px;
+    border: 2px solid #233754;
+    background: #DFF0FF;
+    box-shadow: -5px 2px 100px 0px rgba(0, 0, 0, 0.15);
+    position: relative;
+    display: flex;
+    padding: 21px 20px 23px 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+}
+
+.fill {
+    display: flex;
+    grid-gap: 40px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.title {
+    color: #233754;
+    font-size: 40px;
+    font-family: 'Bahianita', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 4px;
+    margin: 0px;
+}
+
+.playerbox {
+    display: flex;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.playerinfo {
+    width: 150px;
+    text-align: left;
+}
+
+.playername {
+    color: #233754;
+    font-size: 14px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.playerteam {
+    margin-top: -10px;
+    color: #233754;
+    font-size: 12px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 200;
+    line-height: normal;
+}
+
+.stat {
+    margin: 8px;
+    color: #DEEEFD;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.playerimage {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 5000px;
+    border: 1px solid #233754;
+}
+
+.statbox {
+    width: 100px;
+    height: 35px;
+    flex-shrink: 0;
+    border-radius: 20px;
+    background: #436495;
+}
+
+@media (max-width: 768px) {
+    .statsbox {
+        width: 250px;
+        margin: 0;
+    }
+
+    .fill {
+        justify-content: center;
+    }
+
+    .playerinfo {
+        width: 100px;
+        text-align: left;
+    }
+}
+
+@media (max-width: 480px) {
+    .statsbox {
+        width: 100%;
+        margin: 0;
+    }
+
+    .playerinfo {
+        text-align: left;
+    }
+
+    .fill {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,114 @@
+{% extends 'basketball/base.html'%}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'CSS/Stats.css' %}">
+{% endblock%}
+{% block content %}
+{% include 'base/messages.html' %}
+<div class="fill">
+
+    <div class="statsbox" onclick="document.location='allstats'">
+        <p class="title">Point Leaders</p>
+        {% for leader in point_leaders %}
+        <div class="playerbox">
+            <img class="playerimage" src="{{ leader.player_image.url }}"
+                alt="{{ leader..player_first_name }} {{ leader.player_last_name }}">
+            <div class="playerinfo">
+                <p class="playername">{{ leader.player_last_name }} {{ leader.player_last_name }}</p>
+                <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
+            </div>
+            <div class="statbox">
+                <p class="stat">{{ leader.points }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="statsbox" onclick="document.location='allstats'">
+        <p class="title">Assist Leaders</p>
+        {% for leader in assist_leaders %}
+        <div class="playerbox">
+            <img class="playerimage" src="{{ leader.player_image.url }}"
+                alt="{{ leader.player_last_name }} {{ leader.player_last_name }}">
+            <div class="playerinfo">
+                <p class="playername">{{ leader.player_last_name }} {{ leader.player_last_name }}</p>
+                <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
+            </div>
+            <div class="statbox">
+                <p class="stat">{{ leader.assists }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="statsbox" onclick="document.location='allstats'">
+        <p class="title">Rebound Leaders</p>
+        {% for leader in rebound_leaders %}
+        <div class="playerbox">
+            <img class="playerimage" src="{{ leader.player_image.url }}"
+                alt="{{ leader.player_last_name }} {{ leader.player_last_name }}">
+            <div class="playerinfo">
+                <p class="playername">{{ leader.player_last_name }} {{ leader.player_last_name }}</p>
+                <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
+            </div>
+            <div class="statbox">
+                <p class="stat">{{ leader.rebounds }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="statsbox" onclick="document.location='allstats'">
+        <p class="title">Block Leaders</p>
+        {% for leader in block_leaders %}
+        <div class="playerbox">
+            <img class="playerimage" src="{{ leader.player_image.url }}"
+                alt="{{ leader.player_last_name }} {{ leader.player_last_name }}">
+            <div class="playerinfo">
+                <p class="playername">{{ leader.player_last_name }} {{ leader.player_last_name }}</p>
+                <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
+            </div>
+            <div class="statbox">
+                <p class="stat">{{ leader.blocks }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="statsbox" onclick="document.location='allstats'">
+        <p class="title">Steals Leaders</p>
+        {% for leader in steal_leaders %}
+        <div class="playerbox">
+            <img class="playerimage" src="{{ leader.player_image.url }}"
+                alt="{{ leader.player_last_name }} {{ leader.player_last_name }}">
+            <div class="playerinfo">
+                <p class="playername">{{ leader.player_last_name }} {{ leader.player_last_name }}</p>
+                <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
+            </div>
+            <div class="statbox">
+                <p class="stat">{{ leader.steals  }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
+    <div class="statsbox" onclick="document.location='allstats'">
+        <p class="title">3PT Leaders</p>
+        {% for leader in three_pointer_leaders %}
+        <div class="playerbox">
+            <img class="playerimage" src="{{ leader.player_image.url }}"
+                alt="{{ leader.player_last_name }} {{ leader.player_last_name }}">
+            <div class="playerinfo">
+                <p class="playername">{{ leader..player_first_name }} {{ leader.player_last_name }}</p>
+                <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
+            </div>
+            <div class="statbox">
+                <p class="stat">{{ leader.three_pointers }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{%endblock%}

@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'CSS/Login.css' %}">
+        <title>Staff Login</title>
+    </head>
+
+    <body>
+        <div class="login">
+            <a href="{% url 'home' %}" class="company">Varsity Association</a>
+
+            <p class="title">Staff Login</p>
+            {% include 'base/messages.html' %}
+            <form class="login-form" method="post" action="">
+                {% csrf_token %}
+
+                <input type="text" id="username" name="username" class="form" placeholder="   Username" required>
+                <input type="password" id="password" name="password" class="form" placeholder="   Password" required>
+
+                <input type="submit" id="submit" name="submit" class="button" value="Login">
+            </form>
+        </div>
+    </body>
+
+</html>
