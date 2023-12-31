@@ -13,9 +13,9 @@
         {% for leader in kill_leaders %}
         <div class="playerbox">
             <img class="playerimage" src="{{ leader.player_image.url }}"
-                alt="{{ leader..player_first_name }} {{ leader.player_last_name }}">
+                alt="{{ leader.player_first_name }} {{ leader.player_last_name }}">
             <div class="playerinfo">
-                <p class="playername">{{ leader.player_last_name }} {{ leader.player_last_name }}</p>
+                <p class="playername">{{ leader.player_first_name }} {{ leader.player_last_name }}</p>
                 <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
             </div>
             <div class="statbox">
@@ -30,9 +30,9 @@
         {% for leader in dig_leaders %}
         <div class="playerbox">
             <img class="playerimage" src="{{ leader.player_image.url }}"
-                alt="{{ leader.player_last_name }} {{ leader.player_last_name }}">
+                alt="{{ leader.player_first_name }} {{ leader.player_last_name }}">
             <div class="playerinfo">
-                <p class="playername">{{ leader.player_last_name }} {{ leader.player_last_name }}</p>
+                <p class="playername">{{ leader.player_first_name }} {{ leader.player_last_name }}</p>
                 <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
             </div>
             <div class="statbox">
@@ -47,9 +47,9 @@
         {% for leader in block_leaders %}
         <div class="playerbox">
             <img class="playerimage" src="{{ leader.player_image.url }}"
-                alt="{{ leader.player_last_name }} {{ leader.player_last_name }}">
+                alt="{{ leader.player_first_name }} {{ leader.player_last_name }}">
             <div class="playerinfo">
-                <p class="playername">{{ leader.player_last_name }} {{ leader.player_last_name }}</p>
+                <p class="playername">{{ leader.player_first_name }} {{ leader.player_last_name }}</p>
                 <p class="playerteam">{{ leader.team.team_abbreviation }}</p>
             </div>
             <div class="statbox">
