@@ -139,7 +139,7 @@ def delete_media_files(sender, instance, **kwargs):
 @receiver(post_delete, sender=Player)
 def delete_media_files(sender, instance, **kwargs):
     file_field = instance.player_image
-    if file_field:
+    if file_field and file_field!= 'images/person-placeholder.png':
         # Get the path to the media file
         file_path = os.path.join(settings.MEDIA_ROOT, str(file_field))
         # Check if the file exists before attempting to delete it

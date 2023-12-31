@@ -150,7 +150,7 @@ class Player(models.Model):
     player_date_of_birth = models.DateField()
     player_phone_number = models.IntegerField()
     player_email = models.EmailField(max_length=25)
-    player_image = models.ImageField(upload_to='player_images/',null=True, blank=True,default='images/logo-placeholder.png')
+    player_image = models.ImageField(upload_to='player_images/',null=True, blank=True,default='images/person-placeholder.png')
     player_shirt_number = models.IntegerField()
     team = models.ForeignKey(Team, on_delete=models.CASCADE,related_name="football_player_team")
     goals = models.IntegerField(null=True, blank=True)
