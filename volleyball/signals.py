@@ -1,4 +1,4 @@
-from django.db.models.signals import post_delete, post_save,post_init,pre_delete
+from django.db.models.signals import post_delete, post_save,post_init,pre_delete,pre_save
 from django.dispatch import receiver
 from .models import *
 from django.db.models import Q
@@ -29,7 +29,7 @@ def delete_image_on_delete(sender, instance, **kwargs):
     if instance.image and os.path.isfile(instance.image.path):
         os.remove(instance.image.path)
 
-        
+
 #signal to create sets 
 
 @receiver(post_save, sender=Game)
