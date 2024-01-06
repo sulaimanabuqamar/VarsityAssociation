@@ -42,7 +42,10 @@ class PlayerPerformanceAdmin(admin.ModelAdmin):
                     'shots_on_goal', 'tackles', 'crosses', 'saves', 'penalty_kicks']
     search_fields = ['performance_id', 'game', 'player']
 
-
+class GenderLeagueTypeAdmin(admin.ModelAdmin):
+    list_display = ['gender','image']
+    
+admin.site.register(GenderLeagueType, GenderLeagueTypeAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(ScoreKeeper, ScoreKeeperAdmin)

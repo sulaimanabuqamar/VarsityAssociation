@@ -49,7 +49,10 @@ class PlayerPerformanceAdmin(admin.ModelAdmin):
                     'digs', 'blocks', 'solo_blocks_and_assisted_blocks', 'service_aces',]
     search_fields = ['performance_id', 'volleyball_set', 'player']
 
-
+class GenderLeagueTypeAdmin(admin.ModelAdmin):
+    list_display = ['gender','image']
+    
+admin.site.register(GenderLeagueType, GenderLeagueTypeAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(ScoreKeeper, ScoreKeeperAdmin)

@@ -7,6 +7,20 @@ from django.db.models import Sum
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 
+class GenderLeagueType(models.Model):
+    genders_choices=[
+        ('Men','Men'),
+        ('Women','Women'),
+    ]
+    image = models.ImageField(
+        upload_to='images/', blank=True, null=True)
+    gender=models.CharField(
+        max_length=20, choices=genders_choices, default='Men',)
+    
+    class Meta:
+        unique_together = ['gender']
+
+
 class TeamCode(models.Model):
     team_code_id = models.AutoField(primary_key=True)
     team_code = models.CharField(

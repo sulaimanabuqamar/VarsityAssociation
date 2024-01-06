@@ -42,7 +42,10 @@ class PlayerPerformanceAdmin(admin.ModelAdmin):
                     'free_throws', 'rebounds', 'assists', 'steals', 'blocks', 'turnovers', 'points']
     search_fields = ['performance_id', 'game', 'player']
 
-
+class GenderLeagueTypeAdmin(admin.ModelAdmin):
+    list_display = ['gender','image']
+    
+admin.site.register(GenderLeagueType, GenderLeagueTypeAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(ScoreKeeper, ScoreKeeperAdmin)

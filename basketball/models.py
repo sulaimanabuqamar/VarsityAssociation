@@ -6,6 +6,18 @@ from datetime import datetime, timedelta
 
 from django.db.models import Sum
 
+class GenderLeagueType(models.Model):
+    genders_choices=[
+        ('Men','Men'),
+        ('Women','Women'),
+    ]
+    image = models.ImageField(
+        upload_to='images/', blank=True, null=True)
+    gender=models.CharField(
+        max_length=20, choices=genders_choices, default='Men',)
+    
+    class Meta:
+        unique_together = ['gender']
 
 class TeamCode(models.Model):
     team_code_id = models.AutoField(primary_key=True)

@@ -1,12 +1,33 @@
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete, post_save,pre_save
 from django.dispatch import receiver
 from .models import *
 import os
 from django.conf import settings
 
+@receiver(pre_save, sender=GenderLeagueType)
+def delete_previous_image(sender, instance, **kwargs):
+    # Check if the instance already has an ID, meaning it's an update
+    if instance.id:
+        try:
+            # Get the existing instance from the database
+            existing_instance = GenderLeagueType.objects.get(id=instance.id)
+
+            # Check if the image field has changed
+            if existing_instance.image and existing_instance.image != instance.image:
+                # Delete the previous image file
+                if os.path.isfile(existing_instance.image.path):
+                    os.remove(existing_instance.image.path)
+        except GenderLeagueType.DoesNotExist:
+            pass  # Instance doesn't exist yet, nothing to delete
+
+@receiver(post_delete, sender=GenderLeagueType)
+def delete_image_on_delete(sender, instance, **kwargs):
+    # Delete the image file when the model instance is deleted
+    if instance.image and os.path.isfile(instance.image.path):
+        os.remove(instance.image.path)
+
+
 # Define a signal to update after  game has been deleted deleted
-
-
 @receiver(post_delete, sender=Game)
 def update_player_and_team_after_game_delete(sender, instance, **kwargs):
     for player_performance in PlayerPerformance.objects.filter(game=instance):
@@ -14,9 +35,35 @@ def update_player_and_team_after_game_delete(sender, instance, **kwargs):
     update_team_wins_loses(instance.team_1)
     update_team_wins_loses(instance.team_2)
 
+
+#delete image if does not merge the current logo
+@receiver(pre_save, sender=Team)
+def delete_previous_logo(sender, instance, **kwargs):
+    # Check if the instance already exists in the database
+    if instance.pk:
+        original_team = Team.objects.get(pk=instance.pk)
+        # Check if the logo has changed
+        if original_team.team_logo != instance.team_logo:
+            # Delete the previous logo file
+            if original_team.team_logo:
+                if os.path.isfile(original_team.team_logo.path):
+                    os.remove(original_team.team_logo.path)
+
+
+#delete image if does not merge the current player image
+@receiver(pre_save, sender=Player)
+def delete_previous_image(sender, instance, **kwargs):
+    # Check if the player_image has changed and it's not the default image
+    if instance.pk:
+        original_player = Player.objects.get(pk=instance.pk)
+        if original_player.player_image.name != instance.player_image.name and \
+                not original_player.player_image.name.endswith('person-placeholder.png'):
+            # Delete the previous image file
+            if os.path.isfile(original_player.player_image.path):
+                os.remove(original_player.player_image.path)
+
+
 # Define a signal to update the game when a player's performance is updated
-
-
 @receiver(post_save, sender=PlayerPerformance)
 def update_after_player_performance_save(sender, instance, **kwargs):
     player = instance.player
