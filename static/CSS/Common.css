@@ -8,6 +8,7 @@
     box-sizing: border-box;
 }
 
+
 body,
 html {
     background: #EAF5FF;
@@ -29,6 +30,14 @@ body {
     text-transform: capitalize;
 }
 
+a {
+    text-decoration: none;
+}
+
+.text-blue {
+    color: #436495;
+}
+
 .header {
     background-color: #020D1F;
     text-align: center;
@@ -40,6 +49,8 @@ body {
     position: fixed;
     z-index: 1;
 }
+
+
 
 .nav-links-container {
     display: flex;
@@ -117,7 +128,7 @@ footer {
 }
 
 .logo {
-    height: 25px;
+    height: auto;
     width: 40px;
 }
 
@@ -208,6 +219,10 @@ footer {
     display: block;
     list-style-type: none;
     font-size: 14px;
+}
+
+.text-red {
+    color: #dc3545;
 }
 
 .success {

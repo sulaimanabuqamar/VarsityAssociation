@@ -8,7 +8,7 @@ class TeamCodeModelAdmin(admin.ModelAdmin):
 
 
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ['team_name', 'team_abbreviation', 'team_logo', 'manager_first_name',
+    list_display = ['team_name', 'team_abbreviation', 'team_logo','team_gender',  'manager_first_name',
                     'manager_last_name', 'manager_phone_number', 'manager_email', 'wins', 'loses']
     search_fields = ['team_name', 'manager_first_name']
 
@@ -18,8 +18,8 @@ class PlayerAdmin(admin.ModelAdmin):
                     'player_phone_number', 'player_email', 'player_image', 'team']
     search_fields = ['player_first_name', 'player_last_name',
                     'player_phone_number', 'player_shirt_number','player_email',  'team']
-
-
+    
+    
 class ScoreKeeperAdmin(admin.ModelAdmin):
     list_display = ['keeper_id', 'user', 'keeper_number']
     search_fields = ['keeper_id', 'user' 'keeper_number']

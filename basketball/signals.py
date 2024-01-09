@@ -56,7 +56,7 @@ def delete_previous_image(sender, instance, **kwargs):
     # Check if the player_image has changed and it's not the default image
     if instance.pk:
         original_player = Player.objects.get(pk=instance.pk)
-        if original_player.player_image.name != instance.player_image.name and \
+        if original_player.player_image and  original_player.player_image.name != instance.player_image.name and \
                 not original_player.player_image.name.endswith('person-placeholder.png'):
             # Delete the previous image file
             if os.path.isfile(original_player.player_image.path):

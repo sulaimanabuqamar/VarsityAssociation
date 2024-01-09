@@ -12,12 +12,16 @@ class GenderLeagueType(models.Model):
         ('Women','Women'),
     ]
     image = models.ImageField(
-        upload_to='images/', blank=True, null=True)
+        upload_to='langing_pages_images/', blank=True, null=True)
     gender=models.CharField(
         max_length=20, choices=genders_choices, default='Men',)
     
     class Meta:
         unique_together = ['gender']
+        verbose_name = "Basketball Gender League Type"
+    
+    def __str__(self):
+        return f'{self.gender}'
 
 class TeamCode(models.Model):
     team_code_id = models.AutoField(primary_key=True)
@@ -36,6 +40,8 @@ class TeamCode(models.Model):
 
 class Team(models.Model):
     team_id = models.AutoField(primary_key=True)
+    team_gender=models.CharField(
+        max_length=20, choices=GenderLeagueType.genders_choices, default='Men')
     team_name = models.CharField(max_length=40)
     team_abbreviation = models.CharField(max_length=4)
     team_logo = models.ImageField(upload_to='team_logos/')
@@ -50,7 +56,7 @@ class Team(models.Model):
         verbose_name = "Basketball Team"
 
     def __str__(self):
-        return f"{self.team_name}"
+        return f"{self.team_gender}: {self.team_name}"
 
 def validate_future_date(value):
     if value < timezone.now().date():
@@ -122,11 +128,11 @@ class Game(models.Model):
 class Player(models.Model):
     player_id = models.AutoField(primary_key=True)
     player_first_name = models.CharField(max_length=25)
-    player_last_name = models.CharField(max_length=25)
-    player_date_of_birth = models.DateField()
-    player_phone_number = models.IntegerField()
-    player_email = models.EmailField(max_length=25)
-    player_image = models.ImageField(upload_to='player_images/',null=True, blank=True,default='images/person-placeholder.png')
+    player_last_name = models.CharField(max_length=25, null=True, blank=True)
+    player_date_of_birth = models.DateField(null=True, blank=True)
+    player_phone_number = models.IntegerField(null=True, blank=True)
+    player_email = models.EmailField(max_length=25,null=True, blank=True)
+    player_image = models.ImageField(upload_to='player_images/', blank=True,default='images/person-placeholder.png')
     player_shirt_number = models.IntegerField()
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     field_goals = models.IntegerField(null=True, blank=True)
@@ -149,7 +155,7 @@ class Player(models.Model):
         verbose_name = "Basketball Player"
 
     def __str__(self):
-        return f"{self.player_first_name} {self.player_last_name} , {self.team.team_name} team"
+        return f"{self.player_first_name} {self.player_last_name}, {self.team.team_name} team"
 
 
 class ScoreKeeper(models.Model):
@@ -161,7 +167,7 @@ class ScoreKeeper(models.Model):
         verbose_name = "Basketball Score Keeper"
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"
+        return f"{self.keeper_number}, {self.user}"
 
 
 class ScoreKeeperGame(models.Model):
@@ -173,7 +179,7 @@ class ScoreKeeperGame(models.Model):
         verbose_name = "Basketball Score Keeper Game"
 
     def __str__(self):
-        return f"{self.score_keeper.user.first_name}  {self.score_keeper.user.last_name} , {self.game.team_1.team_name} vs {self.game.team_2.team_name} on {self.game.game_date}"
+        return f"{self.score_keeper}, {self.game.team_1.team_name} vs {self.game.team_2.team_name} on {self.game.game_date}"
 
 
 class PlayerPerformance(models.Model):

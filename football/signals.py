@@ -28,6 +28,19 @@ def delete_image_on_delete(sender, instance, **kwargs):
         os.remove(instance.image.path)
 
 
+#delete image if does not merge the current player image
+@receiver(pre_save, sender=Player)
+def delete_previous_image(sender, instance, **kwargs):
+    # Check if the player_image has changed and it's not the default image
+    if instance.pk:
+        original_player = Player.objects.get(pk=instance.pk)
+        if original_player.player_image and  original_player.player_image.name != instance.player_image.name and \
+                not original_player.player_image.name.endswith('person-placeholder.png'):
+            # Delete the previous image file
+            if os.path.isfile(original_player.player_image.path):
+                os.remove(original_player.player_image.path)
+
+
 # Define a signal to update after  game has been deleted deleted
 @receiver(post_delete, sender=Game)
 def update_player_and_team_after_game_delete(sender, instance, **kwargs):

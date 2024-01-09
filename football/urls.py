@@ -21,5 +21,6 @@ urlpatterns = [
          views.saveScores, name='football-save-scores'),
     path('admin/stats/team/<int:team_id>', views.teamStats, name='football-team-stats'), 
      path('admin/stats/team/<int:team_id>', views.teamStats, name='football-team-stats'),
+     path('select/gender/',views.selectGender,name='football-select-gender'),
        
 ]

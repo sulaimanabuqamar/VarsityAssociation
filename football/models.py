@@ -11,14 +11,18 @@ class GenderLeagueType(models.Model):
         ('Women','Women'),
     ]
     image = models.ImageField(
-        upload_to='images/', blank=True, null=True)
+        upload_to='langing_pages_images/', blank=True, null=True)
     gender=models.CharField(
         max_length=20, choices=genders_choices, default='Men',)
     
     class Meta:
         unique_together = ['gender']
+        verbose_name = "Football Gender League Type"
 
-        
+    def __str__(self):
+        return f'{self.gender}'
+
+
 class TeamCode(models.Model):
     team_code_id = models.AutoField(primary_key=True)
     team_code = models.CharField(
@@ -36,6 +40,8 @@ class TeamCode(models.Model):
 
 class Team(models.Model):
     team_id = models.AutoField(primary_key=True)
+    team_gender=models.CharField(
+        max_length=20, choices=GenderLeagueType.genders_choices, default='Men')
     team_name = models.CharField(max_length=40)
     team_abbreviation = models.CharField(max_length=4)
     team_logo = models.ImageField(upload_to='team_logos/')
@@ -52,37 +58,10 @@ class Team(models.Model):
     goals_difference=models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.team_name}"
+       return f"{self.team_gender}: {self.team_name}"
     
     class Meta:
-        verbose_name = "Football Team"
-    
-    def get_total_performance_for_game(self, game):
-        team_players = Player.objects.filter(team=self)
-        performances = PlayerPerformance.objects.filter(game=game, player__in=team_players)
-        if not performances:
-            return {
-                'goals':'-' ,
-                'assists':'-' ,
-                'shots_on_goal':'-' ,
-                'tackles':'-' ,
-                'crosses':'-',
-                'saves':'-' ,
-                'penalty_kicks':'-' ,
-            }
-         
-        total_performance = {
-            'goals': sum(performance.goals or 0 for performance in performances),
-            'assists': sum(performance.assists or 0 for performance in performances),
-            'shots_on_goal': sum(performance.shots_on_goal or 0 for performance in performances),
-            'tackles': sum(performance.tackles or 0 for performance in performances),
-            'crosses': sum(performance.crosses or 0 for performance in performances),
-            'saves': sum(performance.saves or 0 for performance in performances),
-            'penalty_kicks': sum(performance.penalty_kicks or 0 for performance in performances),
-        }
-
-        return total_performance
-    
+        verbose_name = "Football Team"   
 
 
 def validate_future_date(value):
@@ -158,12 +137,12 @@ class Game(models.Model):
 
 class Player(models.Model):
     player_id = models.AutoField(primary_key=True)
-    player_first_name = models.CharField(max_length=25)
-    player_last_name = models.CharField(max_length=25)
-    player_date_of_birth = models.DateField()
-    player_phone_number = models.IntegerField()
-    player_email = models.EmailField(max_length=25)
-    player_image = models.ImageField(upload_to='player_images/',null=True, blank=True,default='images/person-placeholder.png')
+    player_first_name = models.CharField(max_length=25,null=True, blank=True)
+    player_last_name = models.CharField(max_length=25,null=True, blank=True)
+    player_date_of_birth = models.DateField(null=True, blank=True)
+    player_phone_number = models.IntegerField(null=True, blank=True)
+    player_email = models.EmailField(max_length=25,null=True, blank=True)
+    player_image = models.ImageField(upload_to='player_images/', blank=True,default='images/person-placeholder.png')
     player_shirt_number = models.IntegerField()
     team = models.ForeignKey(Team, on_delete=models.CASCADE,related_name="football_player_team")
     goals = models.IntegerField(null=True, blank=True)
@@ -189,7 +168,7 @@ class ScoreKeeper(models.Model):
     keeper_number = models.BigIntegerField()
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"
+        return f"{self.keeper_number}, {self.user}"
     class Meta:
         verbose_name = "Football Score Keeper"
 
@@ -203,7 +182,7 @@ class ScoreKeeperGame(models.Model):
         verbose_name = "Football Score Keeper Game"
 
     def __str__(self):
-        return f"{self.score_keeper.user.first_name}  {self.score_keeper.user.last_name} , {self.game.team_1.team_name} vs {self.game.team_2.team_name} on {self.game.game_date}"
+        return f"{self.score_keeper}, {self.game.team_1.team_name} vs {self.game.team_2.team_name} on {self.game.game_date}"
 
 
 class PlayerPerformance(models.Model):

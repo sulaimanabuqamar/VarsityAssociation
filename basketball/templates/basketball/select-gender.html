@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'CSS/Common.css' %}">
+        <link rel="stylesheet" href="{% static 'CSS/LandingPage.css' %}">
+        <title>Select Gender</title>
+    </head>
+
+    <body>
+        <div class="row">
+
+            {% for data in page_data %}
+            <div class="md-3">
+                <div class="active-landing cursor-pointer"
+                    onclick="document.location='{% url 'basketball-select-gender' %}?gender={{data.gender}}'">
+                    <div class="cs">
+                        <img src="{{data.image.url}}">
+                    </div>
+                    <div class="divider1"></div>
+                    <p class="smalltext">{{data.gender}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </body>
+
+</html>

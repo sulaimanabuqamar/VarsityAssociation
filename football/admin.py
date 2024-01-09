@@ -8,7 +8,7 @@ class TeamCodeModelAdmin(admin.ModelAdmin):
 
 
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ['team_name', 'team_abbreviation', 'team_logo', 'manager_first_name',
+    list_display = ['team_name', 'team_abbreviation', 'team_logo','team_gender',  'manager_first_name',
                     'manager_last_name', 'manager_phone_number', 'manager_email', 'wins', 'loses']
     search_fields = ['team_name', 'manager_first_name']
 

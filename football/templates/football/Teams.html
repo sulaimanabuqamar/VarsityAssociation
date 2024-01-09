@@ -17,7 +17,7 @@
          <th class="winloss">GF</th>
          <th class="winloss">GA</th>
          <th class="winloss">GD</th>
-         <th class="winloss">Pts</th>
+         <th class="winloss">PTS</th>
       </tr>
       {% for Team in teams %}
       <tr class="cursor-pointer" onclick="window.location.href='{% url 'football-team-stats' team_id=Team.team_id %}'">
@@ -27,9 +27,9 @@
          <td class="games winbg">{{Team.wins | default_if_none:'-'}}</td>
          <td class="games ">{{Team.draws | default_if_none:'-'}}</td>
          <td class="games winbg">{{Team.loses | default_if_none:'-'}}</td>
-         <td class="games winbg">{{Team.goals_for | default_if_none:'-'}}</td>
+         <td class="games ">{{Team.goals_for | default_if_none:'-'}}</td>
          <td class="games winbg">{{Team.goals_against| default_if_none:'-'}}</td>
-         <td class="games winbg">{{Team.goals_difference | default_if_none:'-'}}</td>
+         <td class="games">{{Team.goals_difference | default_if_none:'-'}}</td>
          <td class="games winbg">{{Team.points | default_if_none:'-'}}</td>
 
       </tr>

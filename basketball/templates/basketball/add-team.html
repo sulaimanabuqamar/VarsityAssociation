@@ -46,7 +46,15 @@
 {%endif%}
 <div class="fill">
    <div class="messages-container">
-
+      {% if not code_error %}
+      {% if messages %}
+      <ul class="messages">
+         {% for message in messages %}
+         <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+            {% endfor %}
+      </ul>
+      {% endif %}
+      {% endif %}
       <ul id="code-success">
 
       </ul>
@@ -67,7 +75,7 @@
             {{team_form.team_abbreviation.errors}}
          </div>
       </div>
-      <div class=" subtitle">Team Logo
+      <div class=" subtitle">Team Logo *
       </div>
 
       <div class="file-upload-container ">
@@ -116,6 +124,9 @@
 
 
       <div class="title team-roaster">Team Roster</div>
+      <div>
+         <p class="checktext">You must add minimum of 5 players</p>
+      </div>
       <div id="player-section">
          <!-- Display non-field errors -->
 
@@ -222,7 +233,9 @@
       <input type="checkbox" name="check2" class="check">
       <label for="check2.id_for_label" class="checktext">All players have a team jersey.</label><br>
       <input type="checkbox" name="check3" class="check">
-      <label for="check3.id_for_label" class="checktext">I agree to the terms and conditions.</label><br><br><br>
+      <label for="check3.id_for_label" class="checktext"><a class="text-blue" href="{% url 'terms' %}" target="_blank">I
+            agree to the
+            terms and conditions.</a></label><br><br><br>
       <input type="submit" class="submit">
 
    </form>
@@ -308,8 +321,14 @@
          $('#remove-player').remove()
          var ordinalIndicator = getOrdinalIndicator(player_count);
          remove = ''
-         if (player_count > 8) {
+         if (player_count > 5) {
             remove = '<button type="button" class="submit btn-error" id="remove-player">Remove A Player</button>'
+         }
+         if (player_count > 11) {
+            $("#addPlayerField").hide()
+         }
+         else {
+            $("#addPlayerField").show()
          }
 
          $('#id_form-TOTAL_FORMS').val(player_count)
@@ -321,29 +340,29 @@
             </div>
             <div class="forms1">
                <div>
-                  <input type="text" name="form-${prefix}-player_first_name" class="form3" placeholder="First name" required="required" maxlength="25" id="id_form-${prefix}-player_first_name">
+                  <input type="text" name="form-${prefix}-player_first_name" class="form3" placeholder="First name *" required maxlength="25" id="id_form-${prefix}-player_first_name">
                </div>
                <div>
-                  <input type="text" name="form-${prefix}-player_last_name" class="form3" placeholder="Last name" required="required" maxlength="25" id="id_form-${prefix}-player_last_name">
+                  <input type="text" name="form-${prefix}-player_last_name" class="form3" placeholder="Last name"  maxlength="25" id="id_form-${prefix}-player_last_name">
                </div>
             </div>
             <div class="forms1">
                <div>
-                  <input type="text" name="form-${prefix}-player_phone_number" class="form3" placeholder="Phone number" required="required" id="id_form-${prefix}-player_phone_number">
+                  <input type="text" name="form-${prefix}-player_phone_number" class="form3" placeholder="Phone number"  id="id_form-${prefix}-player_phone_number">
                </div>
                <div>
-                  <input type="email" name="form-${prefix}-player_email" class="form3" placeholder="Email address" required="required" maxlength="25" id="id_form-${prefix}-player_email">
+                  <input type="email" name="form-${prefix}-player_email" class="form3" placeholder="Email address"  maxlength="25" id="id_form-${prefix}-player_email">
                </div>
             </div>
             <div class="forms1">
                <div>
-                  <input type="number" name="form-${prefix}-player_shirt_number" class="form3" placeholder="player shirt number" required="required" id="id_form-${prefix}-player_shirt_number">
+                  <input type="number" name="form-${prefix}-player_shirt_number" class="form3" placeholder="player shirt number *"  required id="id_form-${prefix}-player_shirt_number">
                </div>
                <div>
-                  <input type="text" name="form-${prefix}-player_date_of_birth" class="form3" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Date of Birth" required="required" id="id_form-${prefix}-player_date_of_birth">
+                  <input type="text" name="form-${prefix}-player_date_of_birth" class="form3" onfocus="(this.type='date')" onblur="(this.type='text')" placeholder="Date of Birth"  id="id_form-${prefix}-player_date_of_birth">
                </div>
             </div>
-            <div class="subtitle">Player image (optional)</div>
+            <div class="subtitle">Player image </div>
             <div class="file-upload-container ">
                <div class="form2">
                   <div class="file-upload">
@@ -376,7 +395,12 @@
             remove = '<button type="button" class="submit btn-error" id="remove-player">Remove A Player</button>'
          }
          $('.player-count:last').append(remove)
-
+         if (player_count > 11) {
+            $("#addPlayerField").hide()
+         }
+         else {
+            $("#addPlayerField").show()
+         }
       });
 
       // Handle file input change event

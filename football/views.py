@@ -16,9 +16,26 @@ from django.core.serializers import serialize
 import json
 
 # Create your views here.
+def selectGender(request):
+    
+    gender=request.GET.get('gender') 
+    if gender:
+        if gender=='Women':
+            request.session['team_gender']='Women' 
+        else:
+            request.session['team_gender']='Men'
+            
+        if request.user.is_authenticated: 
+            return redirect('football-adminSchedule') 
+        return redirect('football-schedule')
+    
+
+    page_data=GenderLeagueType.objects.all()
+    return render(request,'football/select-gender.html',{'page_data':page_data})  
+
+
+
 # used loginUser since login function is built function
-
-
 def loginUser(request):
     if request.user.is_authenticated:
         return redirect('football-adminSchedule')
@@ -72,7 +89,8 @@ def verifyTeamCode(request):
 
 
 def schedule(request):
-    games = Game.objects.all()
+    team_gender=request.session.get('team_gender')
+    games = Game.objects.filter(Q(team_1__team_gender=team_gender)|Q(team_2__team_gender=team_gender))
     grouped_months = games.annotate(month=TruncMonth('game_date')).values(
         'month').annotate(data_count=Count('game_id')).order_by('month')
     games_per_month = {}
@@ -87,11 +105,13 @@ def schedule(request):
 
 @ custom_login_required
 def adminSchedule(request):
+    team_gender=request.session.get('team_gender')
     # super user can access all games otherwise check  games assigned to user
     if request.user.is_superuser:
-        games = Game.objects.all()
+        games = Game.objects.filter(Q(team_1__team_gender=team_gender)|Q(team_2__team_gender=team_gender))
     else:
         games = Game.objects.filter(
+              Q(team_1__team_gender=team_gender)|Q(team_2__team_gender=team_gender),
             scorekeepergame__score_keeper__user=request.user)
     grouped_months = games.annotate(month=TruncMonth('game_date')).values(
         'month').annotate(data_count=Count('game_id')).order_by('month')
@@ -105,15 +125,19 @@ def adminSchedule(request):
 
 
 def teams(request):
-    teams = Team.objects.order_by('-points', '-goals_difference')
+    team_gender=request.session.get('team_gender')
+    teams = Team.objects.filter(team_gender=team_gender).order_by('-points', '-goals_difference')
     return render(request, "football/Teams.html", {'teams': teams, 'title': 'teams'})
 
 
 def stats(request):
-    goal_leaders = Player.objects.filter(goals__gt=0).order_by('-goals')[:5]
+    team_gender=request.session.get('team_gender')
+    goal_leaders = Player.objects.filter(team__team_gender=team_gender,goals__gt=0).order_by('-goals')[:5]
     assist_leaders = Player.objects.filter(
+        team__team_gender=team_gender,
         assists__gt=0).order_by('-assists')[:5]
     saves_leaders = Player.objects.filter(
+        team__team_gender=team_gender,
         saves__gt=0).order_by('-saves')[:5]
     context = {
         'title': 'Stats',
@@ -130,23 +154,24 @@ def add_team(request):
     if request.method == 'POST':
         team_code = request.POST.get('team_code')
         previous_url = request.POST.get('previous_url')
+        check_code = TeamCode.objects.filter(
+            team_code=team_code, team_code_expiry_date__gt=timezone.now(), team_code_used=False)
         # used modelformset for players since arrays forms needed to validated
         PlayerFormSet = forms.modelformset_factory(
             Player, form=PlayerForm, extra=1)
         team_form = TeamForm(request.POST, request.FILES)
         player_formset = PlayerFormSet(
             request.POST, request.FILES, queryset=Player.objects.none())
-        check_code = TeamCode.objects.filter(
-            team_code=team_code, team_code_expiry_date__gt=timezone.now(), team_code_used=False)
         if not check_code:
             code_error = True
             messages.error(
                 request, 'The code has either expired or does not exist')
 
         else:
+            code_error = False
 
             # if players less  than 7  raise  form error
-            if len(player_formset) < 7:
+            if len(player_formset) <7 or len(player_formset) >12:
                 team_form.add_error(
                     None, "You must add minimum of 7 players")
             elif request.POST.get('check1') != 'on' or request.POST.get('check2') != 'on' or request.POST.get('check2') != 'on':
@@ -154,16 +179,21 @@ def add_team(request):
                     None, "Please check all checkboxes")
             else:
                 if team_form.is_valid() and player_formset.is_valid():
-                    team = team_form.save()
+                    team = team_form.save(commit=False)
+                    team.team_gender=request.session.get('team_gender')
+                    team.save()
                     for form in player_formset:
                         player = form.save(commit=False)
                         player.team = team
+                        player.team_gender=request.session.get('team_gender')
                         player.save()
                     check_code.update(team_code_used=True)
+                    messages.success(request,'Team added successfully.')
                     return redirect('football-teams')
                 else:
                     team_form.add_error(
-                        None, "not added")
+                        None, "Team not added")
+            messages.error(request, 'Please scroll down and correct error(s)')
     else:
         previous_url = request.META.get('HTTP_REFERER') or reverse('football-teams')
         team_form = TeamForm()
@@ -254,8 +284,8 @@ def adminBoxScore(request, game_id):
 
 
 def allStats(request):
-
-    players = Player.objects.order_by('-goals')
+    team_gender=request.session.get('team_gender')
+    players = Player.objects.filter(team__team_gender=team_gender).order_by('-goals')
     return render(request, "football/AllStats.html", {'players': players, 'title': 'All Stats'})
 
 
