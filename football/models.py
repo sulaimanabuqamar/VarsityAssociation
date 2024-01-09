@@ -11,9 +11,9 @@ class GenderLeagueType(models.Model):
         ('Women','Women'),
     ]
     image = models.ImageField(
-        upload_to='langing_pages_images/', blank=True, null=True)
+        upload_to='langing_pages_images/')
     gender=models.CharField(
-        max_length=20, choices=genders_choices, default='Men',)
+        max_length=20, choices=genders_choices, default='Men')
     
     class Meta:
         unique_together = ['gender']
