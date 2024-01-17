@@ -37,10 +37,26 @@ class GameAdmin(admin.ModelAdmin):
                      'game_location', 'team_1__team_name', 'team_2__team_name']
 
 class VolleyballSetAdmin(admin.ModelAdmin):
-    def has_delete_permission(self, request, obj=None):
-        return False
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        # Remove the 'delete_selected' action
+        del actions['delete_selected']
+        return actions
+    
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+
+        # Hide the delete button by setting 'show_delete' to False
+        extra_context['show_delete'] = False
+
+        return super().change_view(
+            request, object_id, form_url, extra_context=extra_context,
+        )
+   
+
     def has_add_permission(self, request, obj=None):
         return False
+
     list_display = ['set_id', 'set_number','game', 'team_1_points', 'team_2_points']
     search_fields = ['set_id', 'game']
 

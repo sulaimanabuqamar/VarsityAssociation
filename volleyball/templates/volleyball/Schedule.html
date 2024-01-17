@@ -17,7 +17,7 @@
       <div class="game" onclick="window.location.href='{% url 'volleyball-boxscore' game_id=game.game_id %}'">
          <div class="left">
             <img class="teamlogo" src="{{ game.team_1.team_logo.url}}">
-            <p class="team">{{game.sets}}{{ game.team_1.team_abbreviation}}</p>
+            <p class="team">{{ game.team_1.team_abbreviation}}</p>
 
          </div>
          <div class="middle">

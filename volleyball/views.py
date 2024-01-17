@@ -26,8 +26,8 @@ def selectGender(request):
             request.session['team_gender']='Men'
             
         if request.user.is_authenticated: 
-            return redirect('football-adminSchedule') 
-        return redirect('football-schedule')
+            return redirect('volleyball-adminSchedule') 
+        return redirect('volleyball-schedule')
     
 
     page_data=GenderLeagueType.objects.all()
@@ -57,7 +57,7 @@ def loginUser(request):
             messages.error(
                 request, 'Invalid login credentials. Please try again.')
 
-    return render(request, 'base/Login.html')
+    return render(request, 'volleyball/Login.html')
 
 def about(request):
     return render(request, "volleyball/About.html", {'title': 'About Us'})
@@ -118,9 +118,11 @@ def adminSchedule(request):
     if request.user.is_superuser:
         games = Game.objects.filter(Q(team_1__team_gender=team_gender)|Q(team_2__team_gender=team_gender))
     else:
+        related_name = ScoreKeeperGame._meta.get_field('game').related_query_name()
         games = Game.objects.filter(
-              Q(team_1__team_gender=team_gender)|Q(team_2__team_gender=team_gender),
-            scorekeepergame__score_keeper__user=request.user)
+            Q(team_1__team_gender=team_gender) | Q(team_2__team_gender=team_gender),
+            **{f'{related_name}__score_keeper__user': request.user}
+        )
         
     grouped_months = games.annotate(month=TruncMonth('game_date')).values(
     'month').annotate(data_count=Count('game_id')).order_by('month')
@@ -323,9 +325,7 @@ def adminBoxScore(request, game_id):
                 for player2 in team2_players:
                     player2_performance = PlayerPerformance.objects.filter(player=player2,volleyball_set=volley_set).first()
                     players2_performance_dict[volley_set][player2] = player2_performance
-
-         
-                   
+           
         context = {
             'players1_performance_dict': players1_performance_dict,
             'players2_performance_dict': players2_performance_dict,

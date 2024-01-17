@@ -40,7 +40,7 @@ def loginUser(request):
             messages.error(
                 request, 'Invalid login credentials. Please try again.')
 
-    return render(request, 'base/Login.html')
+    return render(request, 'basketball/Login.html')
 
 def about(request):
     return render(request, "basketball/About.html", {'title': 'About Us'})
@@ -112,9 +112,12 @@ def adminSchedule(request):
     if request.user.is_superuser:
         games = Game.objects.filter(Q(team_1__team_gender=team_gender)|Q(team_2__team_gender=team_gender))
     else:
+        related_name = ScoreKeeperGame._meta.get_field('game').related_query_name()
         games = Game.objects.filter(
-              Q(team_1__team_gender=team_gender)|Q(team_2__team_gender=team_gender),
-            scorekeepergame__score_keeper__user=request.user)
+            Q(team_1__team_gender=team_gender) | Q(team_2__team_gender=team_gender),
+            **{f'{related_name}__score_keeper__user': request.user}
+        )
+        c
     grouped_months = games.annotate(month=TruncMonth('game_date')).values(
         'month').annotate(data_count=Count('game_id')).order_by('month')
     games_per_month = {}

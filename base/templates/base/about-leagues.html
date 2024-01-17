@@ -1,0 +1,18 @@
+{% load static %}
+<div class="About">
+    <a href="{% url 'home' %}">
+        <img class="logo" src="{% static '../media/images/Logo.png'%}" alt="Varsity Association Logo">
+    </a>
+    <h2 class="footertitle">Varsity Association</h2>
+    <p class="footerabout">Fostering sports excellence in schools through dedicated leagues for volleyball,
+        basketball, and football.</p>
+</div>
+<div class="Leagues">
+    <h4 class="footersubtitle">Leagues</h4>
+    <a class="footertext" href="{% url 'football-select-gender' %}?gender=Men">Football Men</a><br><br>
+    <a class="footertext" href="{% url 'football-select-gender' %}?gender=Women">Football Women</a><br><br>
+    <a class="footertext" href="{% url 'volleyball-select-gender' %}?gender=Men">Volleyball Men</a><br><br>
+    <a class="footertext" href="{% url 'volleyball-select-gender' %}?gender=Women">Volleyball Women</a><br><br>
+    <a class="footertext" href="{% url 'basketball-select-gender' %}?gender=Men">Basketball Men</a> <br><br>
+    <a class="footertext" href="{% url 'basketball-select-gender' %}?gender=Women">Basketball Women</a>
+</div>

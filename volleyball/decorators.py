@@ -8,5 +8,5 @@ def custom_login_required(view_func):
         if request.user.is_staff:
             return view_func(request, *args, **kwargs)
         else:
-            return redirect('football-login')
+            return redirect('volleyball-login')
     return _wrapped_view

@@ -1,20 +1,7 @@
 {% load static %}
 <footer class="container">
     <div class="footer">
-        <div class="About">
-            <a href="{% url 'home' %}">
-                <img class="logo" src="{% static '../media/images/Logo.png'%}" alt="Varsity Association Logo">
-            </a>
-            <h2 class="footertitle">Varsity Association</h2>
-            <p class="footerabout">Fostering sports excellence in schools through dedicated leagues for volleyball,
-                basketball, and football.</p>
-        </div>
-        <div class="Leagues">
-            <h4 class="footersubtitle">Leagues</h4>
-            <a class="footertext" href="{% url 'football-schedule' %}">Football</a><br><br>
-            <a class="footertext" href="{% url 'volleyball-schedule' %}">Volleyball</a><br><br>
-            <a class="footertext" href="{% url 'schedule' %}">Basketball</a>
-        </div>
+        {% include 'base/about-leagues.html' %}
         <div class="Legal">
             <h4 class="footersubtitle">Legal</h4>
             <a class="footertext" href="{% url 'volleyball-terms' %}">Terms</a><br><br>

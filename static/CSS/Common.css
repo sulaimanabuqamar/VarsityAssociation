@@ -162,7 +162,7 @@ footer {
 .Contact,
 .Company {
     position: relative;
-    height: 200px;
+    height: 275px;
 }
 
 .Contactinner {
@@ -319,6 +319,10 @@ footer {
     height: auto;
     width: 24px;
     margin-right: 10px;
+}
+
+label.checktext {
+    text-transform: uppercase;
 }
 
 @media (max-width: 991px) {

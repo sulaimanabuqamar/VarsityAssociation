@@ -42,8 +42,8 @@ class Team(models.Model):
     team_id = models.AutoField(primary_key=True)
     team_gender=models.CharField(
         max_length=20, choices=GenderLeagueType.genders_choices, default='Men')
-    team_name = models.CharField(max_length=40)
-    team_abbreviation = models.CharField(max_length=4)
+    team_name = models.CharField(max_length=100)
+    team_abbreviation = models.CharField(max_length=10)
     team_logo = models.ImageField(upload_to='team_logos/')
     manager_first_name = models.CharField(max_length=25)
     manager_last_name = models.CharField(max_length=25)
@@ -137,8 +137,8 @@ class Game(models.Model):
 
 class Player(models.Model):
     player_id = models.AutoField(primary_key=True)
-    player_first_name = models.CharField(max_length=25,null=True, blank=True)
-    player_last_name = models.CharField(max_length=25,null=True, blank=True)
+    player_first_name = models.CharField(max_length=25)
+    player_last_name = models.CharField(max_length=25, blank=True,default='')
     player_date_of_birth = models.DateField(null=True, blank=True)
     player_phone_number = models.IntegerField(null=True, blank=True)
     player_email = models.EmailField(max_length=25,null=True, blank=True)
