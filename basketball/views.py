@@ -117,7 +117,7 @@ def adminSchedule(request):
             Q(team_1__team_gender=team_gender) | Q(team_2__team_gender=team_gender),
             **{f'{related_name}__score_keeper__user': request.user}
         )
-        c
+        
     grouped_months = games.annotate(month=TruncMonth('game_date')).values(
         'month').annotate(data_count=Count('game_id')).order_by('month')
     games_per_month = {}
